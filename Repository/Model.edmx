@@ -4,11 +4,465 @@
   <edmx:Runtime>
     <!-- SSDL content -->
     <edmx:StorageModels>
-      <Schema xmlns="http://schemas.microsoft.com/ado/2009/11/edm/ssdl" Namespace="Model.Store" Alias="Self" Provider="System.Data.SqlClient" ProviderManifestToken="2005">
-        <EntityContainer Name="ModelTargetContainer" >
-        </EntityContainer>
-      </Schema>
-    </edmx:StorageModels>
+    <Schema Namespace="Model.Store" Alias="Self" Provider="System.Data.SqlClient" ProviderManifestToken="2012" xmlns:store="http://schemas.microsoft.com/ado/2007/12/edm/EntityStoreSchemaGenerator" xmlns="http://schemas.microsoft.com/ado/2009/11/edm/ssdl">
+  <EntityContainer Name="ModelStoreContainer">
+    <EntitySet Name="Clients" EntityType="Model.Store.Clients" store:Type="Tables" Schema="dbo" />
+    <EntitySet Name="Companies" EntityType="Model.Store.Companies" store:Type="Tables" Schema="dbo" />
+    <EntitySet Name="DealsWiths" EntityType="Model.Store.DealsWiths" store:Type="Tables" Schema="dbo" />
+    <EntitySet Name="Contracts" EntityType="Model.Store.Contracts" store:Type="Tables" Schema="dbo" />
+    <EntitySet Name="Employees" EntityType="Model.Store.Employees" store:Type="Tables" Schema="dbo" />
+    <EntitySet Name="Projects" EntityType="Model.Store.Projects" store:Type="Tables" Schema="dbo" />
+    <EntitySet Name="Tasks" EntityType="Model.Store.Tasks" store:Type="Tables" Schema="dbo" />
+    <EntitySet Name="Teams" EntityType="Model.Store.Teams" store:Type="Tables" Schema="dbo" />
+    <EntitySet Name="Assignments" EntityType="Model.Store.Assignments" store:Type="Tables" Schema="dbo" />
+    <EntitySet Name="Proficiencies" EntityType="Model.Store.Proficiencies" store:Type="Tables" Schema="dbo" />
+    <EntitySet Name="TeamProficiencies" EntityType="Model.Store.TeamProficiencies" store:Type="Tables" Schema="dbo" />
+    <EntitySet Name="Assets" EntityType="Model.Store.Assets" store:Type="Tables" Schema="dbo" />
+    <EntitySet Name="Employees_Manager" EntityType="Model.Store.Employees_Manager" store:Type="Tables" Schema="dbo" />
+    <EntitySet Name="Employees_Developer" EntityType="Model.Store.Employees_Developer" store:Type="Tables" Schema="dbo" />
+    <EntitySet Name="Employees_Supplier" EntityType="Model.Store.Employees_Supplier" store:Type="Tables" Schema="dbo" />
+    <AssociationSet Name="ClientDealsWith" Association="Model.Store.ClientDealsWith">
+      <End Role="Client" EntitySet="Clients" />
+      <End Role="DealsWith" EntitySet="DealsWiths" />
+    </AssociationSet>
+    <AssociationSet Name="CompanyDealsWith" Association="Model.Store.CompanyDealsWith">
+      <End Role="Company" EntitySet="Companies" />
+      <End Role="DealsWith" EntitySet="DealsWiths" />
+    </AssociationSet>
+    <AssociationSet Name="CompanyEmployee" Association="Model.Store.CompanyEmployee">
+      <End Role="Company" EntitySet="Companies" />
+      <End Role="Employee" EntitySet="Employees" />
+    </AssociationSet>
+    <AssociationSet Name="ContractProject" Association="Model.Store.ContractProject">
+      <End Role="Contract" EntitySet="Contracts" />
+      <End Role="Project" EntitySet="Projects" />
+    </AssociationSet>
+    <AssociationSet Name="DealsWithContract" Association="Model.Store.DealsWithContract">
+      <End Role="DealsWith" EntitySet="DealsWiths" />
+      <End Role="Contract" EntitySet="Contracts" />
+    </AssociationSet>
+    <AssociationSet Name="ManagerProject" Association="Model.Store.ManagerProject">
+      <End Role="Manager" EntitySet="Employees_Manager" />
+      <End Role="Project" EntitySet="Projects" />
+    </AssociationSet>
+    <AssociationSet Name="ProjectTask" Association="Model.Store.ProjectTask">
+      <End Role="Project" EntitySet="Projects" />
+      <End Role="Task" EntitySet="Tasks" />
+    </AssociationSet>
+    <AssociationSet Name="TaskTask" Association="Model.Store.TaskTask">
+      <End Role="Task" EntitySet="Tasks" />
+      <End Role="Task1" EntitySet="Tasks" />
+    </AssociationSet>
+    <AssociationSet Name="TaskAssignment" Association="Model.Store.TaskAssignment">
+      <End Role="Task" EntitySet="Tasks" />
+      <End Role="Assignment" EntitySet="Assignments" />
+    </AssociationSet>
+    <AssociationSet Name="TeamAssignment" Association="Model.Store.TeamAssignment">
+      <End Role="Team" EntitySet="Teams" />
+      <End Role="Assignment" EntitySet="Assignments" />
+    </AssociationSet>
+    <AssociationSet Name="TeamTeamProficiency" Association="Model.Store.TeamTeamProficiency">
+      <End Role="Team" EntitySet="Teams" />
+      <End Role="TeamProficiency" EntitySet="TeamProficiencies" />
+    </AssociationSet>
+    <AssociationSet Name="TeamDeveloper" Association="Model.Store.TeamDeveloper">
+      <End Role="Team" EntitySet="Teams" />
+      <End Role="Developer" EntitySet="Employees_Developer" />
+    </AssociationSet>
+    <AssociationSet Name="ProficiencyTeamProficiency" Association="Model.Store.ProficiencyTeamProficiency">
+      <End Role="Proficiency" EntitySet="Proficiencies" />
+      <End Role="TeamProficiency" EntitySet="TeamProficiencies" />
+    </AssociationSet>
+    <AssociationSet Name="CompanyAsset" Association="Model.Store.CompanyAsset">
+      <End Role="Company" EntitySet="Companies" />
+      <End Role="Asset" EntitySet="Assets" />
+    </AssociationSet>
+    <AssociationSet Name="SupplierAsset" Association="Model.Store.SupplierAsset">
+      <End Role="Supplier" EntitySet="Employees_Supplier" />
+      <End Role="Asset" EntitySet="Assets" />
+    </AssociationSet>
+    <AssociationSet Name="FK_Manager_inherits_Employee" Association="Model.Store.FK_Manager_inherits_Employee">
+      <End Role="Employee" EntitySet="Employees" />
+      <End Role="Manager" EntitySet="Employees_Manager" />
+    </AssociationSet>
+    <AssociationSet Name="FK_Developer_inherits_Employee" Association="Model.Store.FK_Developer_inherits_Employee">
+      <End Role="Employee" EntitySet="Employees" />
+      <End Role="Developer" EntitySet="Employees_Developer" />
+    </AssociationSet>
+    <AssociationSet Name="FK_Supplier_inherits_Employee" Association="Model.Store.FK_Supplier_inherits_Employee">
+      <End Role="Employee" EntitySet="Employees" />
+      <End Role="Supplier" EntitySet="Employees_Supplier" />
+    </AssociationSet>
+  </EntityContainer>
+  <EntityType Name="Clients">
+    <Key>
+      <PropertyRef Name="Id" />
+    </Key>
+    <Property Name="Id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+    <Property Name="Name" Type="nvarchar(max)" Nullable="false" />
+  </EntityType>
+  <EntityType Name="Companies">
+    <Key>
+      <PropertyRef Name="Id" />
+    </Key>
+    <Property Name="Id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+    <Property Name="Name" Type="nvarchar(max)" Nullable="false" />
+  </EntityType>
+  <EntityType Name="DealsWiths">
+    <Key>
+      <PropertyRef Name="Id" />
+    </Key>
+    <Property Name="Id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+    <Property Name="ClientId" Type="int" Nullable="false" />
+    <Property Name="Date" Type="datetime" Nullable="false" />
+    <Property Name="CompanyId" Type="int" Nullable="false" />
+  </EntityType>
+  <EntityType Name="Contracts">
+    <Key>
+      <PropertyRef Name="Id" />
+    </Key>
+    <Property Name="Id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+    <Property Name="Content" Type="nvarchar(max)" Nullable="false" />
+    <Property Name="DateSigned" Type="datetime" Nullable="false" />
+    <Property Name="DealsWithId" Type="int" Nullable="true" />
+  </EntityType>
+  <EntityType Name="Employees">
+    <Key>
+      <PropertyRef Name="Id" />
+      <PropertyRef Name="CompanyId" />
+    </Key>
+    <Property Name="Id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+    <Property Name="CompanyId" Type="int" Nullable="false" />
+    <Property Name="Name" Type="nvarchar(max)" Nullable="false" />
+    <Property Name="DOB" Type="datetime" Nullable="false" />
+    <Property Name="Gender" Type="nvarchar(max)" Nullable="false" />
+  </EntityType>
+  <EntityType Name="Projects">
+    <Key>
+      <PropertyRef Name="Id" />
+    </Key>
+    <Property Name="Id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+    <Property Name="Name" Type="nvarchar(max)" Nullable="false" />
+    <Property Name="Description" Type="nvarchar(max)" Nullable="false" />
+    <Property Name="ContractId" Type="int" Nullable="true" />
+    <Property Name="ManagerId" Type="int" Nullable="true" />
+    <Property Name="ManagerCompanyId" Type="int" Nullable="true" />
+  </EntityType>
+  <EntityType Name="Tasks">
+    <Key>
+      <PropertyRef Name="Id" />
+      <PropertyRef Name="ProjectId" />
+    </Key>
+    <Property Name="Id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+    <Property Name="Description" Type="nvarchar(max)" Nullable="false" />
+    <Property Name="ProjectId" Type="int" Nullable="false" />
+    <Property Name="TaskId" Type="int" Nullable="true" />
+    <Property Name="TaskProjectId" Type="int" Nullable="true" />
+  </EntityType>
+  <EntityType Name="Teams">
+    <Key>
+      <PropertyRef Name="Id" />
+    </Key>
+    <Property Name="Id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+    <Property Name="Name" Type="nvarchar(max)" Nullable="false" />
+  </EntityType>
+  <EntityType Name="Assignments">
+    <Key>
+      <PropertyRef Name="Id" />
+    </Key>
+    <Property Name="Id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+    <Property Name="TaskId" Type="int" Nullable="false" />
+    <Property Name="TaskProjectId" Type="int" Nullable="false" />
+    <Property Name="TeamId" Type="int" Nullable="false" />
+  </EntityType>
+  <EntityType Name="Proficiencies">
+    <Key>
+      <PropertyRef Name="Id" />
+    </Key>
+    <Property Name="Id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+    <Property Name="Name" Type="nvarchar(max)" Nullable="false" />
+  </EntityType>
+  <EntityType Name="TeamProficiencies">
+    <Key>
+      <PropertyRef Name="Id" />
+    </Key>
+    <Property Name="Id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+    <Property Name="TeamId" Type="int" Nullable="false" />
+    <Property Name="ProficiencyId" Type="int" Nullable="false" />
+  </EntityType>
+  <EntityType Name="Assets">
+    <Key>
+      <PropertyRef Name="Id" />
+      <PropertyRef Name="CompanyId" />
+    </Key>
+    <Property Name="Id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+    <Property Name="CompanyId" Type="int" Nullable="false" />
+    <Property Name="Name" Type="nvarchar(max)" Nullable="false" />
+    <Property Name="SupplierId" Type="int" Nullable="true" />
+    <Property Name="SupplierCompanyId" Type="int" Nullable="true" />
+  </EntityType>
+  <EntityType Name="Employees_Manager">
+    <Key>
+      <PropertyRef Name="Id" />
+      <PropertyRef Name="CompanyId" />
+    </Key>
+    <Property Name="Id" Type="int" Nullable="false" />
+    <Property Name="CompanyId" Type="int" Nullable="false" />
+  </EntityType>
+  <EntityType Name="Employees_Developer">
+    <Key>
+      <PropertyRef Name="Id" />
+      <PropertyRef Name="CompanyId" />
+    </Key>
+    <Property Name="TeamId" Type="int" Nullable="true" />
+    <Property Name="Id" Type="int" Nullable="false" />
+    <Property Name="CompanyId" Type="int" Nullable="false" />
+  </EntityType>
+  <EntityType Name="Employees_Supplier">
+    <Key>
+      <PropertyRef Name="Id" />
+      <PropertyRef Name="CompanyId" />
+    </Key>
+    <Property Name="Id" Type="int" Nullable="false" />
+    <Property Name="CompanyId" Type="int" Nullable="false" />
+  </EntityType>
+  <Association Name="ClientDealsWith">
+    <End Role="Client" Type="Model.Store.Clients" Multiplicity="1" />
+    <End Role="DealsWith" Type="Model.Store.DealsWiths" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="Client">
+        <PropertyRef Name="Id" />
+      </Principal>
+      <Dependent Role="DealsWith">
+        <PropertyRef Name="ClientId" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <Association Name="CompanyDealsWith">
+    <End Role="Company" Type="Model.Store.Companies" Multiplicity="1" />
+    <End Role="DealsWith" Type="Model.Store.DealsWiths" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="Company">
+        <PropertyRef Name="Id" />
+      </Principal>
+      <Dependent Role="DealsWith">
+        <PropertyRef Name="CompanyId" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <Association Name="CompanyEmployee">
+    <End Role="Company" Type="Model.Store.Companies" Multiplicity="1" />
+    <End Role="Employee" Type="Model.Store.Employees" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="Company">
+        <PropertyRef Name="Id" />
+      </Principal>
+      <Dependent Role="Employee">
+        <PropertyRef Name="CompanyId" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <Association Name="ContractProject">
+    <End Role="Contract" Type="Model.Store.Contracts" Multiplicity="0..1" />
+    <End Role="Project" Type="Model.Store.Projects" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="Contract">
+        <PropertyRef Name="Id" />
+      </Principal>
+      <Dependent Role="Project">
+        <PropertyRef Name="ContractId" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <Association Name="DealsWithContract">
+    <End Role="DealsWith" Type="Model.Store.DealsWiths" Multiplicity="0..1" />
+    <End Role="Contract" Type="Model.Store.Contracts" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="DealsWith">
+        <PropertyRef Name="Id" />
+      </Principal>
+      <Dependent Role="Contract">
+        <PropertyRef Name="DealsWithId" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <Association Name="ManagerProject">
+    <End Role="Manager" Type="Model.Store.Employees_Manager" Multiplicity="0..1" />
+    <End Role="Project" Type="Model.Store.Projects" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="Manager">
+        <PropertyRef Name="Id" />
+        <PropertyRef Name="CompanyId" />
+      </Principal>
+      <Dependent Role="Project">
+        <PropertyRef Name="ManagerId" />
+        <PropertyRef Name="ManagerCompanyId" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <Association Name="ProjectTask">
+    <End Role="Project" Type="Model.Store.Projects" Multiplicity="1" />
+    <End Role="Task" Type="Model.Store.Tasks" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="Project">
+        <PropertyRef Name="Id" />
+      </Principal>
+      <Dependent Role="Task">
+        <PropertyRef Name="ProjectId" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <Association Name="TaskTask">
+    <End Role="Task" Type="Model.Store.Tasks" Multiplicity="0..1" />
+    <End Role="Task1" Type="Model.Store.Tasks" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="Task">
+        <PropertyRef Name="Id" />
+        <PropertyRef Name="ProjectId" />
+      </Principal>
+      <Dependent Role="Task1">
+        <PropertyRef Name="TaskId" />
+        <PropertyRef Name="TaskProjectId" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <Association Name="TaskAssignment">
+    <End Role="Task" Type="Model.Store.Tasks" Multiplicity="1" />
+    <End Role="Assignment" Type="Model.Store.Assignments" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="Task">
+        <PropertyRef Name="Id" />
+        <PropertyRef Name="ProjectId" />
+      </Principal>
+      <Dependent Role="Assignment">
+        <PropertyRef Name="TaskId" />
+        <PropertyRef Name="TaskProjectId" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <Association Name="TeamAssignment">
+    <End Role="Team" Type="Model.Store.Teams" Multiplicity="1" />
+    <End Role="Assignment" Type="Model.Store.Assignments" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="Team">
+        <PropertyRef Name="Id" />
+      </Principal>
+      <Dependent Role="Assignment">
+        <PropertyRef Name="TeamId" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <Association Name="TeamTeamProficiency">
+    <End Role="Team" Type="Model.Store.Teams" Multiplicity="1" />
+    <End Role="TeamProficiency" Type="Model.Store.TeamProficiencies" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="Team">
+        <PropertyRef Name="Id" />
+      </Principal>
+      <Dependent Role="TeamProficiency">
+        <PropertyRef Name="TeamId" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <Association Name="TeamDeveloper">
+    <End Role="Team" Type="Model.Store.Teams" Multiplicity="0..1" />
+    <End Role="Developer" Type="Model.Store.Employees_Developer" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="Team">
+        <PropertyRef Name="Id" />
+      </Principal>
+      <Dependent Role="Developer">
+        <PropertyRef Name="TeamId" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <Association Name="ProficiencyTeamProficiency">
+    <End Role="Proficiency" Type="Model.Store.Proficiencies" Multiplicity="1" />
+    <End Role="TeamProficiency" Type="Model.Store.TeamProficiencies" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="Proficiency">
+        <PropertyRef Name="Id" />
+      </Principal>
+      <Dependent Role="TeamProficiency">
+        <PropertyRef Name="ProficiencyId" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <Association Name="CompanyAsset">
+    <End Role="Company" Type="Model.Store.Companies" Multiplicity="1" />
+    <End Role="Asset" Type="Model.Store.Assets" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="Company">
+        <PropertyRef Name="Id" />
+      </Principal>
+      <Dependent Role="Asset">
+        <PropertyRef Name="CompanyId" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <Association Name="SupplierAsset">
+    <End Role="Supplier" Type="Model.Store.Employees_Supplier" Multiplicity="0..1" />
+    <End Role="Asset" Type="Model.Store.Assets" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="Supplier">
+        <PropertyRef Name="Id" />
+        <PropertyRef Name="CompanyId" />
+      </Principal>
+      <Dependent Role="Asset">
+        <PropertyRef Name="SupplierId" />
+        <PropertyRef Name="SupplierCompanyId" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <Association Name="FK_Manager_inherits_Employee">
+    <End Role="Employee" Type="Model.Store.Employees" Multiplicity="1">
+      <OnDelete Action="Cascade" />
+    </End>
+    <End Role="Manager" Type="Model.Store.Employees_Manager" Multiplicity="0..1" />
+    <ReferentialConstraint>
+      <Principal Role="Employee">
+        <PropertyRef Name="Id" />
+        <PropertyRef Name="CompanyId" />
+      </Principal>
+      <Dependent Role="Manager">
+        <PropertyRef Name="Id" />
+        <PropertyRef Name="CompanyId" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <Association Name="FK_Developer_inherits_Employee">
+    <End Role="Employee" Type="Model.Store.Employees" Multiplicity="1">
+      <OnDelete Action="Cascade" />
+    </End>
+    <End Role="Developer" Type="Model.Store.Employees_Developer" Multiplicity="0..1" />
+    <ReferentialConstraint>
+      <Principal Role="Employee">
+        <PropertyRef Name="Id" />
+        <PropertyRef Name="CompanyId" />
+      </Principal>
+      <Dependent Role="Developer">
+        <PropertyRef Name="Id" />
+        <PropertyRef Name="CompanyId" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <Association Name="FK_Supplier_inherits_Employee">
+    <End Role="Employee" Type="Model.Store.Employees" Multiplicity="1">
+      <OnDelete Action="Cascade" />
+    </End>
+    <End Role="Supplier" Type="Model.Store.Employees_Supplier" Multiplicity="0..1" />
+    <ReferentialConstraint>
+      <Principal Role="Employee">
+        <PropertyRef Name="Id" />
+        <PropertyRef Name="CompanyId" />
+      </Principal>
+      <Dependent Role="Supplier">
+        <PropertyRef Name="Id" />
+        <PropertyRef Name="CompanyId" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+</Schema></edmx:StorageModels>
     <!-- CSDL content -->
     <edmx:ConceptualModels>
       <Schema xmlns="http://schemas.microsoft.com/ado/2009/11/edm" xmlns:cg="http://schemas.microsoft.com/ado/2006/04/codegeneration" xmlns:store="http://schemas.microsoft.com/ado/2007/12/edm/EntityStoreSchemaGenerator" Namespace="Model" Alias="Self" xmlns:annotation="http://schemas.microsoft.com/ado/2009/02/edm/annotation" annotation:UseStrongSpatialTypes="false">
@@ -17,17 +471,73 @@
           <EntitySet Name="Companies" EntityType="Model.Company" />
           <EntitySet Name="DealsWiths" EntityType="Model.DealsWith" />
           <AssociationSet Name="ClientDealsWith" Association="Model.ClientDealsWith">
-            <End Role="Client" EntitySet="Clients" />
-            <End Role="DealsWith" EntitySet="DealsWiths" />
+            <End EntitySet="Clients" Role="Client" />
+            <End EntitySet="DealsWiths" Role="DealsWith" />
           </AssociationSet>
           <AssociationSet Name="CompanyDealsWith" Association="Model.CompanyDealsWith">
-            <End Role="Company" EntitySet="Companies" />
-            <End Role="DealsWith" EntitySet="DealsWiths" />
+            <End EntitySet="Companies" Role="Company" />
+            <End EntitySet="DealsWiths" Role="DealsWith" />
           </AssociationSet>
           <EntitySet Name="Contracts" EntityType="Model.Contract" />
+          <EntitySet Name="Employees" EntityType="Model.Employee" />
+          <AssociationSet Name="CompanyEmployee" Association="Model.CompanyEmployee">
+            <End Role="Company" EntitySet="Companies" />
+            <End Role="Employee" EntitySet="Employees" />
+          </AssociationSet>
+          <EntitySet Name="Projects" EntityType="Model.Project" />
+          <AssociationSet Name="ContractProject" Association="Model.ContractProject">
+            <End Role="Contract" EntitySet="Contracts" />
+            <End Role="Project" EntitySet="Projects" />
+          </AssociationSet>
           <AssociationSet Name="DealsWithContract" Association="Model.DealsWithContract">
             <End Role="DealsWith" EntitySet="DealsWiths" />
             <End Role="Contract" EntitySet="Contracts" />
+          </AssociationSet>
+          <AssociationSet Name="ManagerProject" Association="Model.ManagerProject">
+            <End Role="Manager" EntitySet="Employees" />
+            <End Role="Project" EntitySet="Projects" />
+          </AssociationSet>
+          <EntitySet Name="Tasks" EntityType="Model.Task" />
+          <AssociationSet Name="ProjectTask" Association="Model.ProjectTask">
+            <End Role="Project" EntitySet="Projects" />
+            <End Role="Task" EntitySet="Tasks" />
+          </AssociationSet>
+          <AssociationSet Name="TaskTask" Association="Model.TaskTask">
+            <End Role="Task" EntitySet="Tasks" />
+            <End Role="Task1" EntitySet="Tasks" />
+          </AssociationSet>
+          <EntitySet Name="Teams" EntityType="Model.Team" />
+          <EntitySet Name="Assignments" EntityType="Model.Assignment" />
+          <AssociationSet Name="TaskAssignment" Association="Model.TaskAssignment">
+            <End Role="Task" EntitySet="Tasks" />
+            <End Role="Assignment" EntitySet="Assignments" />
+          </AssociationSet>
+          <AssociationSet Name="TeamAssignment" Association="Model.TeamAssignment">
+            <End Role="Team" EntitySet="Teams" />
+            <End Role="Assignment" EntitySet="Assignments" />
+          </AssociationSet>
+          <EntitySet Name="Proficiencies" EntityType="Model.Proficiency" />
+          <EntitySet Name="TeamProficiencies" EntityType="Model.TeamProficiency" />
+          <AssociationSet Name="TeamTeamProficiency" Association="Model.TeamTeamProficiency">
+            <End Role="Team" EntitySet="Teams" />
+            <End Role="TeamProficiency" EntitySet="TeamProficiencies" />
+          </AssociationSet>
+          <AssociationSet Name="TeamDeveloper" Association="Model.TeamDeveloper">
+            <End Role="Team" EntitySet="Teams" />
+            <End Role="Developer" EntitySet="Employees" />
+          </AssociationSet>
+          <AssociationSet Name="ProficiencyTeamProficiency" Association="Model.ProficiencyTeamProficiency">
+            <End Role="Proficiency" EntitySet="Proficiencies" />
+            <End Role="TeamProficiency" EntitySet="TeamProficiencies" />
+          </AssociationSet>
+          <EntitySet Name="Assets" EntityType="Model.Asset" />
+          <AssociationSet Name="CompanyAsset" Association="Model.CompanyAsset">
+            <End Role="Company" EntitySet="Companies" />
+            <End Role="Asset" EntitySet="Assets" />
+          </AssociationSet>
+          <AssociationSet Name="SupplierAsset" Association="Model.SupplierAsset">
+            <End Role="Supplier" EntitySet="Employees" />
+            <End Role="Asset" EntitySet="Assets" />
           </AssociationSet>
         </EntityContainer>
         <EntityType Name="Client">
@@ -45,6 +555,8 @@
           <Property Name="Id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
           <Property Name="Name" Type="String" Nullable="false" />
           <NavigationProperty Name="DealsWiths" Relationship="Model.CompanyDealsWith" FromRole="Company" ToRole="DealsWith" />
+          <NavigationProperty Name="Employees" Relationship="Model.CompanyEmployee" FromRole="Company" ToRole="Employee" />
+          <NavigationProperty Name="Assets" Relationship="Model.CompanyAsset" FromRole="Company" ToRole="Asset" />
         </EntityType>
         <EntityType Name="DealsWith">
           <Key>
@@ -52,15 +564,15 @@
           </Key>
           <Property Name="Id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
           <NavigationProperty Name="Client" Relationship="Model.ClientDealsWith" FromRole="DealsWith" ToRole="Client" />
-          <Property Name="ClientId" Type="Int32" Nullable="false" />
+          <Property Name="ClientId" Nullable="false" Type="Int32" />
           <Property Name="Date" Type="DateTime" Nullable="false" />
           <NavigationProperty Name="Company" Relationship="Model.CompanyDealsWith" FromRole="DealsWith" ToRole="Company" />
-          <Property Name="CompanyId" Type="Int32" Nullable="false" />
+          <Property Name="CompanyId" Nullable="false" Type="Int32" />
           <NavigationProperty Name="Contracts" Relationship="Model.DealsWithContract" FromRole="DealsWith" ToRole="Contract" />
         </EntityType>
         <Association Name="ClientDealsWith">
-          <End Type="Model.Client" Role="Client" Multiplicity="1" />
-          <End Type="Model.DealsWith" Role="DealsWith" Multiplicity="*" />
+          <End Type="Model.Client" Multiplicity="1" Role="Client" />
+          <End Type="Model.DealsWith" Multiplicity="*" Role="DealsWith" />
           <ReferentialConstraint>
             <Principal Role="Client">
               <PropertyRef Name="Id" />
@@ -71,8 +583,8 @@
           </ReferentialConstraint>
         </Association>
         <Association Name="CompanyDealsWith">
-          <End Type="Model.Company" Role="Company" Multiplicity="1" />
-          <End Type="Model.DealsWith" Role="DealsWith" Multiplicity="*" />
+          <End Type="Model.Company" Multiplicity="1" Role="Company" />
+          <End Type="Model.DealsWith" Multiplicity="*" Role="DealsWith" />
           <ReferentialConstraint>
             <Principal Role="Company">
               <PropertyRef Name="Id" />
@@ -89,11 +601,72 @@
           <Property Name="Id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
           <Property Name="Content" Type="String" Nullable="false" />
           <Property Name="DateSigned" Type="DateTime" Nullable="false" />
+          <NavigationProperty Name="Projects" Relationship="Model.ContractProject" FromRole="Contract" ToRole="Project" />
           <NavigationProperty Name="DealsWith" Relationship="Model.DealsWithContract" FromRole="Contract" ToRole="DealsWith" />
-          <Property Name="DealsWithId" Type="Int32" Nullable="false" />
+          <Property Name="DealsWithId" Type="Int32" Nullable="true" />
         </EntityType>
+        <EntityType Name="Employee" Abstract="true" >
+          <Key>
+            <PropertyRef Name="Id" />
+            <PropertyRef Name="CompanyId" />
+          </Key>
+          <Property Name="Id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <NavigationProperty Name="Company" Relationship="Model.CompanyEmployee" FromRole="Employee" ToRole="Company" />
+          <Property Name="CompanyId" Type="Int32" Nullable="false" />
+          <Property Name="Name" Type="String" Nullable="false" />
+          <Property Name="DOB" Type="DateTime" Nullable="false" />
+          <Property Name="Gender" Type="String" Nullable="false" />
+        </EntityType>
+        <Association Name="CompanyEmployee">
+          <End Type="Model.Company" Role="Company" Multiplicity="1" />
+          <End Type="Model.Employee" Role="Employee" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Company">
+              <PropertyRef Name="Id" />
+            </Principal>
+            <Dependent Role="Employee">
+              <PropertyRef Name="CompanyId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <EntityType Name="Supplier" BaseType="Model.Employee" >
+          <NavigationProperty Name="Assets" Relationship="Model.SupplierAsset" FromRole="Supplier" ToRole="Asset" />
+        </EntityType>
+        <EntityType Name="Manager" BaseType="Model.Employee" >
+          <NavigationProperty Name="Projects" Relationship="Model.ManagerProject" FromRole="Manager" ToRole="Project" />
+        </EntityType>
+        <EntityType Name="Developer" BaseType="Model.Employee" >
+          <NavigationProperty Name="Team" Relationship="Model.TeamDeveloper" FromRole="Developer" ToRole="Team" />
+          <Property Name="TeamId" Type="Int32" Nullable="true" />
+        </EntityType>
+        <EntityType Name="Project">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="Name" Type="String" Nullable="false" />
+          <Property Name="Description" Type="String" Nullable="false" />
+          <NavigationProperty Name="Contract" Relationship="Model.ContractProject" FromRole="Project" ToRole="Contract" />
+          <Property Name="ContractId" Type="Int32" Nullable="true" />
+          <NavigationProperty Name="Manager" Relationship="Model.ManagerProject" FromRole="Project" ToRole="Manager" />
+          <Property Name="ManagerId" Type="Int32" Nullable="true" />
+          <Property Name="ManagerCompanyId" Type="Int32" Nullable="true" />
+          <NavigationProperty Name="Tasks" Relationship="Model.ProjectTask" FromRole="Project" ToRole="Task" />
+        </EntityType>
+        <Association Name="ContractProject">
+          <End Type="Model.Contract" Role="Contract" Multiplicity="0..1" />
+          <End Type="Model.Project" Role="Project" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Contract">
+              <PropertyRef Name="Id" />
+            </Principal>
+            <Dependent Role="Project">
+              <PropertyRef Name="ContractId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
         <Association Name="DealsWithContract">
-          <End Type="Model.DealsWith" Role="DealsWith" Multiplicity="1" />
+          <End Type="Model.DealsWith" Role="DealsWith" Multiplicity="0..1" />
           <End Type="Model.Contract" Role="Contract" Multiplicity="*" />
           <ReferentialConstraint>
             <Principal Role="DealsWith">
@@ -104,17 +677,344 @@
             </Dependent>
           </ReferentialConstraint>
         </Association>
+        <Association Name="ManagerProject">
+          <End Type="Model.Manager" Role="Manager" Multiplicity="0..1" />
+          <End Type="Model.Project" Role="Project" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Manager">
+              <PropertyRef Name="Id" />
+              <PropertyRef Name="CompanyId" />
+            </Principal>
+            <Dependent Role="Project">
+              <PropertyRef Name="ManagerId" />
+              <PropertyRef Name="ManagerCompanyId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <EntityType Name="Task">
+          <Key>
+            <PropertyRef Name="Id" />
+            <PropertyRef Name="ProjectId" />
+          </Key>
+          <Property Name="Id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="Description" Type="String" Nullable="false" />
+          <NavigationProperty Name="Project" Relationship="Model.ProjectTask" FromRole="Task" ToRole="Project" />
+          <Property Name="ProjectId" Type="Int32" Nullable="false" />
+          <NavigationProperty Name="SubTasks" Relationship="Model.TaskTask" FromRole="Task" ToRole="Task1" />
+          <NavigationProperty Name="SuperTask" Relationship="Model.TaskTask" FromRole="Task1" ToRole="Task" />
+          <Property Name="TaskId" Type="Int32" Nullable="true" />
+          <Property Name="TaskProjectId" Type="Int32" Nullable="true" />
+          <NavigationProperty Name="Assignments" Relationship="Model.TaskAssignment" FromRole="Task" ToRole="Assignment" />
+        </EntityType>
+        <Association Name="ProjectTask">
+          <End Type="Model.Project" Role="Project" Multiplicity="1" />
+          <End Type="Model.Task" Role="Task" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Project">
+              <PropertyRef Name="Id" />
+            </Principal>
+            <Dependent Role="Task">
+              <PropertyRef Name="ProjectId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="TaskTask">
+          <End Type="Model.Task" Role="Task" Multiplicity="0..1" />
+          <End Type="Model.Task" Role="Task1" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Task">
+              <PropertyRef Name="Id" />
+              <PropertyRef Name="ProjectId" />
+            </Principal>
+            <Dependent Role="Task1">
+              <PropertyRef Name="TaskId" />
+              <PropertyRef Name="TaskProjectId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <EntityType Name="Team">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <NavigationProperty Name="Assignments" Relationship="Model.TeamAssignment" FromRole="Team" ToRole="Assignment" />
+          <Property Name="Name" Type="String" Nullable="false" />
+          <NavigationProperty Name="TeamProficiencies" Relationship="Model.TeamTeamProficiency" FromRole="Team" ToRole="TeamProficiency" />
+          <NavigationProperty Name="Developers" Relationship="Model.TeamDeveloper" FromRole="Team" ToRole="Developer" />
+        </EntityType>
+        <EntityType Name="Assignment">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <NavigationProperty Name="Task" Relationship="Model.TaskAssignment" FromRole="Assignment" ToRole="Task" />
+          <Property Name="TaskId" Type="Int32" Nullable="false" />
+          <Property Name="TaskProjectId" Type="Int32" Nullable="false" />
+          <NavigationProperty Name="Team" Relationship="Model.TeamAssignment" FromRole="Assignment" ToRole="Team" />
+          <Property Name="TeamId" Type="Int32" Nullable="false" />
+        </EntityType>
+        <Association Name="TaskAssignment">
+          <End Type="Model.Task" Role="Task" Multiplicity="1" />
+          <End Type="Model.Assignment" Role="Assignment" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Task">
+              <PropertyRef Name="Id" />
+              <PropertyRef Name="ProjectId" />
+            </Principal>
+            <Dependent Role="Assignment">
+              <PropertyRef Name="TaskId" />
+              <PropertyRef Name="TaskProjectId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="TeamAssignment">
+          <End Type="Model.Team" Role="Team" Multiplicity="1" />
+          <End Type="Model.Assignment" Role="Assignment" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Team">
+              <PropertyRef Name="Id" />
+            </Principal>
+            <Dependent Role="Assignment">
+              <PropertyRef Name="TeamId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <EntityType Name="Proficiency">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="Name" Type="String" Nullable="false" />
+          <NavigationProperty Name="TeamProficiencies" Relationship="Model.ProficiencyTeamProficiency" FromRole="Proficiency" ToRole="TeamProficiency" />
+        </EntityType>
+        <EntityType Name="TeamProficiency">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <NavigationProperty Name="Team" Relationship="Model.TeamTeamProficiency" FromRole="TeamProficiency" ToRole="Team" />
+          <Property Name="TeamId" Type="Int32" Nullable="false" />
+          <NavigationProperty Name="Proficiency" Relationship="Model.ProficiencyTeamProficiency" FromRole="TeamProficiency" ToRole="Proficiency" />
+          <Property Name="ProficiencyId" Type="Int32" Nullable="false" />
+        </EntityType>
+        <Association Name="TeamTeamProficiency">
+          <End Type="Model.Team" Role="Team" Multiplicity="1" />
+          <End Type="Model.TeamProficiency" Role="TeamProficiency" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Team">
+              <PropertyRef Name="Id" />
+            </Principal>
+            <Dependent Role="TeamProficiency">
+              <PropertyRef Name="TeamId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="TeamDeveloper">
+          <End Type="Model.Team" Role="Team" Multiplicity="0..1" />
+          <End Type="Model.Developer" Role="Developer" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Team">
+              <PropertyRef Name="Id" />
+            </Principal>
+            <Dependent Role="Developer">
+              <PropertyRef Name="TeamId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="ProficiencyTeamProficiency">
+          <End Type="Model.Proficiency" Role="Proficiency" Multiplicity="1" />
+          <End Type="Model.TeamProficiency" Role="TeamProficiency" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Proficiency">
+              <PropertyRef Name="Id" />
+            </Principal>
+            <Dependent Role="TeamProficiency">
+              <PropertyRef Name="ProficiencyId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <EntityType Name="Asset">
+          <Key>
+            <PropertyRef Name="Id" />
+            <PropertyRef Name="CompanyId" />
+          </Key>
+          <Property Name="Id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <NavigationProperty Name="Company" Relationship="Model.CompanyAsset" FromRole="Asset" ToRole="Company" />
+          <Property Name="CompanyId" Type="Int32" Nullable="false" />
+          <Property Name="Name" Type="String" Nullable="false" />
+          <NavigationProperty Name="Supplier" Relationship="Model.SupplierAsset" FromRole="Asset" ToRole="Supplier" />
+          <Property Name="SupplierId" Type="Int32" Nullable="true" />
+          <Property Name="SupplierCompanyId" Type="Int32" Nullable="true" />
+        </EntityType>
+        <Association Name="CompanyAsset">
+          <End Type="Model.Company" Role="Company" Multiplicity="1" />
+          <End Type="Model.Asset" Role="Asset" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Company">
+              <PropertyRef Name="Id" />
+            </Principal>
+            <Dependent Role="Asset">
+              <PropertyRef Name="CompanyId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="SupplierAsset">
+          <End Type="Model.Supplier" Role="Supplier" Multiplicity="0..1" />
+          <End Type="Model.Asset" Role="Asset" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Supplier">
+              <PropertyRef Name="Id" />
+              <PropertyRef Name="CompanyId" />
+            </Principal>
+            <Dependent Role="Asset">
+              <PropertyRef Name="SupplierId" />
+              <PropertyRef Name="SupplierCompanyId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
       </Schema>
     </edmx:ConceptualModels>
     <!-- C-S mapping content -->
     <edmx:Mappings>
-      <Mapping xmlns="http://schemas.microsoft.com/ado/2009/11/mapping/cs" Space="C-S">
-        <Alias Key="Model" Value="Model" />
-        <Alias Key="Target" Value="Model.Store" />
-        <EntityContainerMapping CdmEntityContainer="ModelContainer" StorageEntityContainer="ModelTargetContainer">
-        </EntityContainerMapping>
-      </Mapping>
-    </edmx:Mappings>
+    <Mapping Space="C-S" xmlns="http://schemas.microsoft.com/ado/2009/11/mapping/cs">
+  <EntityContainerMapping StorageEntityContainer="ModelStoreContainer" CdmEntityContainer="ModelContainer">
+    <EntitySetMapping Name="Clients">
+      <EntityTypeMapping TypeName="IsTypeOf(Model.Client)">
+        <MappingFragment StoreEntitySet="Clients">
+          <ScalarProperty Name="Id" ColumnName="Id" />
+          <ScalarProperty Name="Name" ColumnName="Name" />
+        </MappingFragment>
+      </EntityTypeMapping>
+    </EntitySetMapping>
+    <EntitySetMapping Name="Companies">
+      <EntityTypeMapping TypeName="IsTypeOf(Model.Company)">
+        <MappingFragment StoreEntitySet="Companies">
+          <ScalarProperty Name="Id" ColumnName="Id" />
+          <ScalarProperty Name="Name" ColumnName="Name" />
+        </MappingFragment>
+      </EntityTypeMapping>
+    </EntitySetMapping>
+    <EntitySetMapping Name="DealsWiths">
+      <EntityTypeMapping TypeName="IsTypeOf(Model.DealsWith)">
+        <MappingFragment StoreEntitySet="DealsWiths">
+          <ScalarProperty Name="Id" ColumnName="Id" />
+          <ScalarProperty Name="ClientId" ColumnName="ClientId" />
+          <ScalarProperty Name="Date" ColumnName="Date" />
+          <ScalarProperty Name="CompanyId" ColumnName="CompanyId" />
+        </MappingFragment>
+      </EntityTypeMapping>
+    </EntitySetMapping>
+    <EntitySetMapping Name="Contracts">
+      <EntityTypeMapping TypeName="IsTypeOf(Model.Contract)">
+        <MappingFragment StoreEntitySet="Contracts">
+          <ScalarProperty Name="Id" ColumnName="Id" />
+          <ScalarProperty Name="Content" ColumnName="Content" />
+          <ScalarProperty Name="DateSigned" ColumnName="DateSigned" />
+          <ScalarProperty Name="DealsWithId" ColumnName="DealsWithId" />
+        </MappingFragment>
+      </EntityTypeMapping>
+    </EntitySetMapping>
+    <EntitySetMapping Name="Employees">
+      <EntityTypeMapping TypeName="IsTypeOf(Model.Employee)">
+        <MappingFragment StoreEntitySet="Employees">
+          <ScalarProperty Name="Id" ColumnName="Id" />
+          <ScalarProperty Name="CompanyId" ColumnName="CompanyId" />
+          <ScalarProperty Name="Name" ColumnName="Name" />
+          <ScalarProperty Name="DOB" ColumnName="DOB" />
+          <ScalarProperty Name="Gender" ColumnName="Gender" />
+        </MappingFragment>
+      </EntityTypeMapping>
+      <EntityTypeMapping TypeName="IsTypeOf(Model.Manager)">
+        <MappingFragment StoreEntitySet="Employees_Manager">
+          <ScalarProperty Name="Id" ColumnName="Id" />
+          <ScalarProperty Name="CompanyId" ColumnName="CompanyId" />
+        </MappingFragment>
+      </EntityTypeMapping>
+      <EntityTypeMapping TypeName="IsTypeOf(Model.Developer)">
+        <MappingFragment StoreEntitySet="Employees_Developer">
+          <ScalarProperty Name="Id" ColumnName="Id" />
+          <ScalarProperty Name="CompanyId" ColumnName="CompanyId" />
+          <ScalarProperty Name="TeamId" ColumnName="TeamId" />
+        </MappingFragment>
+      </EntityTypeMapping>
+      <EntityTypeMapping TypeName="IsTypeOf(Model.Supplier)">
+        <MappingFragment StoreEntitySet="Employees_Supplier">
+          <ScalarProperty Name="Id" ColumnName="Id" />
+          <ScalarProperty Name="CompanyId" ColumnName="CompanyId" />
+        </MappingFragment>
+      </EntityTypeMapping>
+    </EntitySetMapping>
+    <EntitySetMapping Name="Projects">
+      <EntityTypeMapping TypeName="IsTypeOf(Model.Project)">
+        <MappingFragment StoreEntitySet="Projects">
+          <ScalarProperty Name="Id" ColumnName="Id" />
+          <ScalarProperty Name="Name" ColumnName="Name" />
+          <ScalarProperty Name="Description" ColumnName="Description" />
+          <ScalarProperty Name="ContractId" ColumnName="ContractId" />
+          <ScalarProperty Name="ManagerId" ColumnName="ManagerId" />
+          <ScalarProperty Name="ManagerCompanyId" ColumnName="ManagerCompanyId" />
+        </MappingFragment>
+      </EntityTypeMapping>
+    </EntitySetMapping>
+    <EntitySetMapping Name="Tasks">
+      <EntityTypeMapping TypeName="IsTypeOf(Model.Task)">
+        <MappingFragment StoreEntitySet="Tasks">
+          <ScalarProperty Name="Id" ColumnName="Id" />
+          <ScalarProperty Name="ProjectId" ColumnName="ProjectId" />
+          <ScalarProperty Name="Description" ColumnName="Description" />
+          <ScalarProperty Name="TaskId" ColumnName="TaskId" />
+          <ScalarProperty Name="TaskProjectId" ColumnName="TaskProjectId" />
+        </MappingFragment>
+      </EntityTypeMapping>
+    </EntitySetMapping>
+    <EntitySetMapping Name="Teams">
+      <EntityTypeMapping TypeName="IsTypeOf(Model.Team)">
+        <MappingFragment StoreEntitySet="Teams">
+          <ScalarProperty Name="Id" ColumnName="Id" />
+          <ScalarProperty Name="Name" ColumnName="Name" />
+        </MappingFragment>
+      </EntityTypeMapping>
+    </EntitySetMapping>
+    <EntitySetMapping Name="Assignments">
+      <EntityTypeMapping TypeName="IsTypeOf(Model.Assignment)">
+        <MappingFragment StoreEntitySet="Assignments">
+          <ScalarProperty Name="Id" ColumnName="Id" />
+          <ScalarProperty Name="TaskId" ColumnName="TaskId" />
+          <ScalarProperty Name="TaskProjectId" ColumnName="TaskProjectId" />
+          <ScalarProperty Name="TeamId" ColumnName="TeamId" />
+        </MappingFragment>
+      </EntityTypeMapping>
+    </EntitySetMapping>
+    <EntitySetMapping Name="Proficiencies">
+      <EntityTypeMapping TypeName="IsTypeOf(Model.Proficiency)">
+        <MappingFragment StoreEntitySet="Proficiencies">
+          <ScalarProperty Name="Id" ColumnName="Id" />
+          <ScalarProperty Name="Name" ColumnName="Name" />
+        </MappingFragment>
+      </EntityTypeMapping>
+    </EntitySetMapping>
+    <EntitySetMapping Name="TeamProficiencies">
+      <EntityTypeMapping TypeName="IsTypeOf(Model.TeamProficiency)">
+        <MappingFragment StoreEntitySet="TeamProficiencies">
+          <ScalarProperty Name="Id" ColumnName="Id" />
+          <ScalarProperty Name="TeamId" ColumnName="TeamId" />
+          <ScalarProperty Name="ProficiencyId" ColumnName="ProficiencyId" />
+        </MappingFragment>
+      </EntityTypeMapping>
+    </EntitySetMapping>
+    <EntitySetMapping Name="Assets">
+      <EntityTypeMapping TypeName="IsTypeOf(Model.Asset)">
+        <MappingFragment StoreEntitySet="Assets">
+          <ScalarProperty Name="Id" ColumnName="Id" />
+          <ScalarProperty Name="CompanyId" ColumnName="CompanyId" />
+          <ScalarProperty Name="Name" ColumnName="Name" />
+          <ScalarProperty Name="SupplierId" ColumnName="SupplierId" />
+          <ScalarProperty Name="SupplierCompanyId" ColumnName="SupplierCompanyId" />
+        </MappingFragment>
+      </EntityTypeMapping>
+    </EntitySetMapping>
+  </EntityContainerMapping>
+</Mapping></edmx:Mappings>
   </edmx:Runtime>
   <!-- EF Designer content (DO NOT EDIT MANUALLY BELOW HERE) -->
   <edmx:Designer xmlns="http://schemas.microsoft.com/ado/2009/11/edmx">
@@ -128,6 +1028,7 @@
         <DesignerProperty Name="ValidateOnBuild" Value="true" />
         <DesignerProperty Name="EnablePluralization" Value="True" />
         <DesignerProperty Name="CodeGenerationStrategy" Value="None" />
+        <DesignerProperty Name="UseLegacyProvider" Value="False" />
       </DesignerInfoPropertySet>
     </edmx:Options>
     <!-- Diagram content (shape and connector positions) -->
