@@ -17,19 +17,19 @@ namespace Repository
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2214:DoNotCallOverridableMethodsInConstructors")]
         public Team()
         {
-            this.Assignments = new HashSet<Assignment>();
-            this.TeamProficiencies = new HashSet<TeamProficiency>();
             this.Developers = new HashSet<Developer>();
+            this.TeamProficiencies = new HashSet<TeamProficiency>();
+            this.Assignments = new HashSet<Assignment>();
         }
     
         public int Id { get; set; }
         public string Name { get; set; }
     
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
-        public virtual ICollection<Assignment> Assignments { get; set; }
+        public virtual ICollection<Developer> Developers { get; set; }
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
         public virtual ICollection<TeamProficiency> TeamProficiencies { get; set; }
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
-        public virtual ICollection<Developer> Developers { get; set; }
+        public virtual ICollection<Assignment> Assignments { get; set; }
     }
 }

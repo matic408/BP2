@@ -14,7 +14,6 @@ namespace Repository
     
     public partial class Assignment
     {
-        public int Id { get; set; }
         public int TaskId { get; set; }
         public int TaskProjectId { get; set; }
         public int TeamId { get; set; }

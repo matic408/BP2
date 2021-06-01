@@ -141,7 +141,6 @@ namespace UI.ViewModels
 
 
         public MyICommand AddCommand { get; set; }
-        public MyICommand EditCommand { get; set; }
         public MyICommand DeleteCommand { get; set; }
         public MyICommand ShowAddCommand { get; set; }
         public MyICommand ShowEditCommand { get; set; }
@@ -162,10 +161,8 @@ namespace UI.ViewModels
         public TeamProficiencyViewModel()
         {
             ShowAddCommand = new MyICommand(ShowAdd);
-            ShowEditCommand = new MyICommand(ShowEdit);
             DeleteCommand = new MyICommand(Delete);
             AddCommand = new MyICommand(Add);
-            EditCommand = new MyICommand(Edit);
             Proficiencies = new ObservableCollection<Proficiency>(Service.Instance.GetProficiencies());
             Teams = new ObservableCollection<Team>(Service.Instance.GetTeams());
             Cleanup();
@@ -220,25 +217,16 @@ namespace UI.ViewModels
         {
             if (Validate())
             {
-                Service.Instance.AddTeamProficiency(new TeamProficiency { Proficiency = SelectedProficiency, Team = SelectedTeam });
-                Refresh();
-                Cleanup();
-                Visible = Visibility.Collapsed;
-            }
-            else
-            {
-                MessageBox.Show("Please input correct values.", "Validation", MessageBoxButton.OK);
-            }
-        }
-
-        public void Edit()
-        {
-            if (Validate())
-            {
-                Service.Instance.EditTeamProficiency(SelectedTeamProficiency.Id, new TeamProficiency() { Id = SelectedTeamProficiency.Id, Proficiency = SelectedProficiency, Team = SelectedTeam });
-                Refresh();
-                Cleanup();
-                Visible = Visibility.Collapsed;
+                if(Service.Instance.AddTeamProficiency(new TeamProficiency { Proficiency = SelectedProficiency, Team = SelectedTeam }))
+                {
+                    Refresh();
+                    Cleanup();
+                    Visible = Visibility.Collapsed;
+                }
+                else
+                {
+                    MessageBox.Show("Key must be Unique.", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
+                }
             }
             else
             {
@@ -250,7 +238,7 @@ namespace UI.ViewModels
         {
             if (MessageBox.Show("Are you sure?", "Confirmation", MessageBoxButton.YesNo) == MessageBoxResult.Yes)
             {
-                Service.Instance.DeleteTeamProficiency(SelectedTeamProficiency.Id);
+                Service.Instance.DeleteTeamProficiency(SelectedTeamProficiency.Team, SelectedTeamProficiency.Proficiency);
                 Refresh();
                 Cleanup();
                 Visible = Visibility.Collapsed;

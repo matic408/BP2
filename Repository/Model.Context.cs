@@ -33,9 +33,9 @@ namespace Repository
         public virtual DbSet<Project> Projects { get; set; }
         public virtual DbSet<Task> Tasks { get; set; }
         public virtual DbSet<Team> Teams { get; set; }
-        public virtual DbSet<Assignment> Assignments { get; set; }
         public virtual DbSet<Proficiency> Proficiencies { get; set; }
-        public virtual DbSet<TeamProficiency> TeamProficiencies { get; set; }
         public virtual DbSet<Asset> Assets { get; set; }
+        public virtual DbSet<TeamProficiency> TeamProficiencies { get; set; }
+        public virtual DbSet<Assignment> Assignments { get; set; }
     }
 }

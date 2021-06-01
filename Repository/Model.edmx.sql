@@ -2,7 +2,7 @@
 -- --------------------------------------------------
 -- Entity Designer DDL Script for SQL Server 2005, 2008, 2012 and Azure
 -- --------------------------------------------------
--- Date Created: 05/29/2021 19:38:33
+-- Date Created: 06/01/2021 20:40:07
 -- Generated from EDMX file: D:\BP\Repository\Model.edmx
 -- --------------------------------------------------
 
@@ -41,26 +41,26 @@ GO
 IF OBJECT_ID(N'[dbo].[FK_TaskTask]', 'F') IS NOT NULL
     ALTER TABLE [dbo].[Tasks] DROP CONSTRAINT [FK_TaskTask];
 GO
-IF OBJECT_ID(N'[dbo].[FK_TaskAssignment]', 'F') IS NOT NULL
-    ALTER TABLE [dbo].[Assignments] DROP CONSTRAINT [FK_TaskAssignment];
-GO
-IF OBJECT_ID(N'[dbo].[FK_TeamAssignment]', 'F') IS NOT NULL
-    ALTER TABLE [dbo].[Assignments] DROP CONSTRAINT [FK_TeamAssignment];
-GO
-IF OBJECT_ID(N'[dbo].[FK_TeamTeamProficiency]', 'F') IS NOT NULL
-    ALTER TABLE [dbo].[TeamProficiencies] DROP CONSTRAINT [FK_TeamTeamProficiency];
-GO
 IF OBJECT_ID(N'[dbo].[FK_TeamDeveloper]', 'F') IS NOT NULL
     ALTER TABLE [dbo].[Employees_Developer] DROP CONSTRAINT [FK_TeamDeveloper];
-GO
-IF OBJECT_ID(N'[dbo].[FK_ProficiencyTeamProficiency]', 'F') IS NOT NULL
-    ALTER TABLE [dbo].[TeamProficiencies] DROP CONSTRAINT [FK_ProficiencyTeamProficiency];
 GO
 IF OBJECT_ID(N'[dbo].[FK_CompanyAsset]', 'F') IS NOT NULL
     ALTER TABLE [dbo].[Assets] DROP CONSTRAINT [FK_CompanyAsset];
 GO
 IF OBJECT_ID(N'[dbo].[FK_SupplierAsset]', 'F') IS NOT NULL
     ALTER TABLE [dbo].[Assets] DROP CONSTRAINT [FK_SupplierAsset];
+GO
+IF OBJECT_ID(N'[dbo].[FK_ProficiencyTeamProficiency]', 'F') IS NOT NULL
+    ALTER TABLE [dbo].[TeamProficiencies] DROP CONSTRAINT [FK_ProficiencyTeamProficiency];
+GO
+IF OBJECT_ID(N'[dbo].[FK_TeamTeamProficiency]', 'F') IS NOT NULL
+    ALTER TABLE [dbo].[TeamProficiencies] DROP CONSTRAINT [FK_TeamTeamProficiency];
+GO
+IF OBJECT_ID(N'[dbo].[FK_TaskAssignment]', 'F') IS NOT NULL
+    ALTER TABLE [dbo].[Assignments] DROP CONSTRAINT [FK_TaskAssignment];
+GO
+IF OBJECT_ID(N'[dbo].[FK_TeamAssignment]', 'F') IS NOT NULL
+    ALTER TABLE [dbo].[Assignments] DROP CONSTRAINT [FK_TeamAssignment];
 GO
 IF OBJECT_ID(N'[dbo].[FK_Manager_inherits_Employee]', 'F') IS NOT NULL
     ALTER TABLE [dbo].[Employees_Manager] DROP CONSTRAINT [FK_Manager_inherits_Employee];
@@ -100,17 +100,17 @@ GO
 IF OBJECT_ID(N'[dbo].[Teams]', 'U') IS NOT NULL
     DROP TABLE [dbo].[Teams];
 GO
-IF OBJECT_ID(N'[dbo].[Assignments]', 'U') IS NOT NULL
-    DROP TABLE [dbo].[Assignments];
-GO
 IF OBJECT_ID(N'[dbo].[Proficiencies]', 'U') IS NOT NULL
     DROP TABLE [dbo].[Proficiencies];
+GO
+IF OBJECT_ID(N'[dbo].[Assets]', 'U') IS NOT NULL
+    DROP TABLE [dbo].[Assets];
 GO
 IF OBJECT_ID(N'[dbo].[TeamProficiencies]', 'U') IS NOT NULL
     DROP TABLE [dbo].[TeamProficiencies];
 GO
-IF OBJECT_ID(N'[dbo].[Assets]', 'U') IS NOT NULL
-    DROP TABLE [dbo].[Assets];
+IF OBJECT_ID(N'[dbo].[Assignments]', 'U') IS NOT NULL
+    DROP TABLE [dbo].[Assignments];
 GO
 IF OBJECT_ID(N'[dbo].[Employees_Manager]', 'U') IS NOT NULL
     DROP TABLE [dbo].[Employees_Manager];
@@ -196,27 +196,10 @@ CREATE TABLE [dbo].[Teams] (
 );
 GO
 
--- Creating table 'Assignments'
-CREATE TABLE [dbo].[Assignments] (
-    [Id] int IDENTITY(1,1) NOT NULL,
-    [TaskId] int  NOT NULL,
-    [TaskProjectId] int  NOT NULL,
-    [TeamId] int  NOT NULL
-);
-GO
-
 -- Creating table 'Proficiencies'
 CREATE TABLE [dbo].[Proficiencies] (
     [Id] int IDENTITY(1,1) NOT NULL,
     [Name] nvarchar(max)  NOT NULL
-);
-GO
-
--- Creating table 'TeamProficiencies'
-CREATE TABLE [dbo].[TeamProficiencies] (
-    [Id] int IDENTITY(1,1) NOT NULL,
-    [TeamId] int  NOT NULL,
-    [ProficiencyId] int  NOT NULL
 );
 GO
 
@@ -227,6 +210,21 @@ CREATE TABLE [dbo].[Assets] (
     [Name] nvarchar(max)  NOT NULL,
     [SupplierId] int  NULL,
     [SupplierCompanyId] int  NULL
+);
+GO
+
+-- Creating table 'TeamProficiencies'
+CREATE TABLE [dbo].[TeamProficiencies] (
+    [ProficiencyId] int  NOT NULL,
+    [TeamId] int  NOT NULL
+);
+GO
+
+-- Creating table 'Assignments'
+CREATE TABLE [dbo].[Assignments] (
+    [TaskId] int  NOT NULL,
+    [TaskProjectId] int  NOT NULL,
+    [TeamId] int  NOT NULL
 );
 GO
 
@@ -304,21 +302,9 @@ ADD CONSTRAINT [PK_Teams]
     PRIMARY KEY CLUSTERED ([Id] ASC);
 GO
 
--- Creating primary key on [Id] in table 'Assignments'
-ALTER TABLE [dbo].[Assignments]
-ADD CONSTRAINT [PK_Assignments]
-    PRIMARY KEY CLUSTERED ([Id] ASC);
-GO
-
 -- Creating primary key on [Id] in table 'Proficiencies'
 ALTER TABLE [dbo].[Proficiencies]
 ADD CONSTRAINT [PK_Proficiencies]
-    PRIMARY KEY CLUSTERED ([Id] ASC);
-GO
-
--- Creating primary key on [Id] in table 'TeamProficiencies'
-ALTER TABLE [dbo].[TeamProficiencies]
-ADD CONSTRAINT [PK_TeamProficiencies]
     PRIMARY KEY CLUSTERED ([Id] ASC);
 GO
 
@@ -326,6 +312,18 @@ GO
 ALTER TABLE [dbo].[Assets]
 ADD CONSTRAINT [PK_Assets]
     PRIMARY KEY CLUSTERED ([Id], [CompanyId] ASC);
+GO
+
+-- Creating primary key on [ProficiencyId], [TeamId] in table 'TeamProficiencies'
+ALTER TABLE [dbo].[TeamProficiencies]
+ADD CONSTRAINT [PK_TeamProficiencies]
+    PRIMARY KEY CLUSTERED ([ProficiencyId], [TeamId] ASC);
+GO
+
+-- Creating primary key on [TaskId], [TaskProjectId], [TeamId] in table 'Assignments'
+ALTER TABLE [dbo].[Assignments]
+ADD CONSTRAINT [PK_Assignments]
+    PRIMARY KEY CLUSTERED ([TaskId], [TaskProjectId], [TeamId] ASC);
 GO
 
 -- Creating primary key on [Id], [CompanyId] in table 'Employees_Manager'
@@ -470,51 +468,6 @@ ON [dbo].[Tasks]
     ([TaskId], [TaskProjectId]);
 GO
 
--- Creating foreign key on [TaskId], [TaskProjectId] in table 'Assignments'
-ALTER TABLE [dbo].[Assignments]
-ADD CONSTRAINT [FK_TaskAssignment]
-    FOREIGN KEY ([TaskId], [TaskProjectId])
-    REFERENCES [dbo].[Tasks]
-        ([Id], [ProjectId])
-    ON DELETE NO ACTION ON UPDATE NO ACTION;
-GO
-
--- Creating non-clustered index for FOREIGN KEY 'FK_TaskAssignment'
-CREATE INDEX [IX_FK_TaskAssignment]
-ON [dbo].[Assignments]
-    ([TaskId], [TaskProjectId]);
-GO
-
--- Creating foreign key on [TeamId] in table 'Assignments'
-ALTER TABLE [dbo].[Assignments]
-ADD CONSTRAINT [FK_TeamAssignment]
-    FOREIGN KEY ([TeamId])
-    REFERENCES [dbo].[Teams]
-        ([Id])
-    ON DELETE NO ACTION ON UPDATE NO ACTION;
-GO
-
--- Creating non-clustered index for FOREIGN KEY 'FK_TeamAssignment'
-CREATE INDEX [IX_FK_TeamAssignment]
-ON [dbo].[Assignments]
-    ([TeamId]);
-GO
-
--- Creating foreign key on [TeamId] in table 'TeamProficiencies'
-ALTER TABLE [dbo].[TeamProficiencies]
-ADD CONSTRAINT [FK_TeamTeamProficiency]
-    FOREIGN KEY ([TeamId])
-    REFERENCES [dbo].[Teams]
-        ([Id])
-    ON DELETE NO ACTION ON UPDATE NO ACTION;
-GO
-
--- Creating non-clustered index for FOREIGN KEY 'FK_TeamTeamProficiency'
-CREATE INDEX [IX_FK_TeamTeamProficiency]
-ON [dbo].[TeamProficiencies]
-    ([TeamId]);
-GO
-
 -- Creating foreign key on [TeamId] in table 'Employees_Developer'
 ALTER TABLE [dbo].[Employees_Developer]
 ADD CONSTRAINT [FK_TeamDeveloper]
@@ -528,21 +481,6 @@ GO
 CREATE INDEX [IX_FK_TeamDeveloper]
 ON [dbo].[Employees_Developer]
     ([TeamId]);
-GO
-
--- Creating foreign key on [ProficiencyId] in table 'TeamProficiencies'
-ALTER TABLE [dbo].[TeamProficiencies]
-ADD CONSTRAINT [FK_ProficiencyTeamProficiency]
-    FOREIGN KEY ([ProficiencyId])
-    REFERENCES [dbo].[Proficiencies]
-        ([Id])
-    ON DELETE NO ACTION ON UPDATE NO ACTION;
-GO
-
--- Creating non-clustered index for FOREIGN KEY 'FK_ProficiencyTeamProficiency'
-CREATE INDEX [IX_FK_ProficiencyTeamProficiency]
-ON [dbo].[TeamProficiencies]
-    ([ProficiencyId]);
 GO
 
 -- Creating foreign key on [CompanyId] in table 'Assets'
@@ -573,6 +511,54 @@ GO
 CREATE INDEX [IX_FK_SupplierAsset]
 ON [dbo].[Assets]
     ([SupplierId], [SupplierCompanyId]);
+GO
+
+-- Creating foreign key on [ProficiencyId] in table 'TeamProficiencies'
+ALTER TABLE [dbo].[TeamProficiencies]
+ADD CONSTRAINT [FK_ProficiencyTeamProficiency]
+    FOREIGN KEY ([ProficiencyId])
+    REFERENCES [dbo].[Proficiencies]
+        ([Id])
+    ON DELETE NO ACTION ON UPDATE NO ACTION;
+GO
+
+-- Creating foreign key on [TeamId] in table 'TeamProficiencies'
+ALTER TABLE [dbo].[TeamProficiencies]
+ADD CONSTRAINT [FK_TeamTeamProficiency]
+    FOREIGN KEY ([TeamId])
+    REFERENCES [dbo].[Teams]
+        ([Id])
+    ON DELETE NO ACTION ON UPDATE NO ACTION;
+GO
+
+-- Creating non-clustered index for FOREIGN KEY 'FK_TeamTeamProficiency'
+CREATE INDEX [IX_FK_TeamTeamProficiency]
+ON [dbo].[TeamProficiencies]
+    ([TeamId]);
+GO
+
+-- Creating foreign key on [TaskId], [TaskProjectId] in table 'Assignments'
+ALTER TABLE [dbo].[Assignments]
+ADD CONSTRAINT [FK_TaskAssignment]
+    FOREIGN KEY ([TaskId], [TaskProjectId])
+    REFERENCES [dbo].[Tasks]
+        ([Id], [ProjectId])
+    ON DELETE NO ACTION ON UPDATE NO ACTION;
+GO
+
+-- Creating foreign key on [TeamId] in table 'Assignments'
+ALTER TABLE [dbo].[Assignments]
+ADD CONSTRAINT [FK_TeamAssignment]
+    FOREIGN KEY ([TeamId])
+    REFERENCES [dbo].[Teams]
+        ([Id])
+    ON DELETE NO ACTION ON UPDATE NO ACTION;
+GO
+
+-- Creating non-clustered index for FOREIGN KEY 'FK_TeamAssignment'
+CREATE INDEX [IX_FK_TeamAssignment]
+ON [dbo].[Assignments]
+    ([TeamId]);
 GO
 
 -- Creating foreign key on [Id], [CompanyId] in table 'Employees_Manager'

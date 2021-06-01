@@ -14,11 +14,10 @@ namespace Repository
     
     public partial class TeamProficiency
     {
-        public int Id { get; set; }
-        public int TeamId { get; set; }
         public int ProficiencyId { get; set; }
+        public int TeamId { get; set; }
     
-        public virtual Team Team { get; set; }
         public virtual Proficiency Proficiency { get; set; }
+        public virtual Team Team { get; set; }
     }
 }

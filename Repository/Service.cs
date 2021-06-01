@@ -53,7 +53,7 @@ namespace Repository
 
         public bool DeleteClient(int id)
         {
-            if(db.DealsWiths.FirstOrDefault(x=>x.Client.Id == id) == null)
+            if (db.DealsWiths.FirstOrDefault(x => x.Client.Id == id) == null)
             {
                 db.Clients.Remove(db.Clients.FirstOrDefault(x => x.Id == id));
                 db.SaveChanges();
@@ -238,10 +238,18 @@ namespace Repository
             
         }
 
-        public void AddAssignment(Assignment x)
+        public bool AddAssignment(Assignment x)
         {
+            foreach(Assignment y in db.Assignments)
+            {
+                if(y.Team.Id == x.Team.Id && y.Task.Id == x.Task.Id)
+                {
+                    return false;
+                }
+            }
             db.Assignments.Add(x);
             db.SaveChanges();
+            return true;
         }
 
         public List<Assignment> GetAssignments()
@@ -249,21 +257,9 @@ namespace Repository
             return db.Assignments.ToList();
         }
 
-        public Assignment GetAssignment(int id)
+        public void DeleteAssignment(Team team, Task task)
         {
-            return db.Assignments.FirstOrDefault(x => x.Id == id);
-        }
-
-        public void EditAssignment(int id, Assignment temp)
-        {
-            db.Assignments.FirstOrDefault(x => x.Id == id).Task = temp.Task;
-            db.Assignments.FirstOrDefault(x => x.Id == id).Team = temp.Team;
-            db.SaveChanges();
-        }
-
-        public void DeleteAssignment(int id)
-        {
-            db.Assignments.Remove(db.Assignments.FirstOrDefault(x => x.Id == id));
+            db.Assignments.Remove(db.Assignments.FirstOrDefault(x => x.Team.Id == team.Id && x.Task.Id == task.Id));
             db.SaveChanges();
         }
 
@@ -303,10 +299,15 @@ namespace Repository
             }
         }
 
-        public void AddTeamProficiency(TeamProficiency x)
+        public bool AddTeamProficiency(TeamProficiency x)
         {
-            db.TeamProficiencies.Add(x);
-            db.SaveChanges();
+            if(db.TeamProficiencies.FirstOrDefault(y=>y.Proficiency.Id == x.Proficiency.Id && y.Team.Id == x.Team.Id) == null)
+            {
+                db.TeamProficiencies.Add(x);
+                db.SaveChanges();
+                return true;
+            }
+            return false;
         }
 
         public List<TeamProficiency> GetTeamProficiencies()
@@ -314,21 +315,9 @@ namespace Repository
             return db.TeamProficiencies.ToList();
         }
 
-        public TeamProficiency GetTeamProficiency(int id)
+        public void DeleteTeamProficiency(Team team, Proficiency proficiency)
         {
-            return db.TeamProficiencies.FirstOrDefault(x => x.Id == id);
-        }
-
-        public void EditTeamProficiency(int id, TeamProficiency temp)
-        {
-            db.TeamProficiencies.FirstOrDefault(x => x.Id == id).Team = temp.Team;
-            db.TeamProficiencies.FirstOrDefault(x => x.Id == id).Proficiency = temp.Proficiency;
-            db.SaveChanges();
-        }
-
-        public void DeleteTeamProficiency(int id)
-        {
-            db.TeamProficiencies.Remove(db.TeamProficiencies.FirstOrDefault(x => x.Id == id));
+            db.TeamProficiencies.Remove(db.TeamProficiencies.FirstOrDefault(x => x.Team.Id == team.Id && x.Proficiency.Id == proficiency.Id));
             db.SaveChanges();
         }
 

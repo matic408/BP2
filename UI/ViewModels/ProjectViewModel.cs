@@ -295,7 +295,7 @@ namespace UI.ViewModels
 
         public bool Validate()
         {
-            if (SelectedManager == null)
+            if (string.IsNullOrWhiteSpace(Name))
             {
                 return false;
             }
