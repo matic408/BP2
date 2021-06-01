@@ -46,6 +46,38 @@ namespace UI.Commands
             {
                 viewModel.CurrentViewModel = new ContractViewModel();
             }
+            else if(parameter.ToString() == "Project")
+            {
+                viewModel.CurrentViewModel = new ProjectViewModel();
+            }
+            else if(parameter.ToString() == "Employee")
+            {
+                viewModel.CurrentViewModel = new EmployeeViewModel();
+            }
+            else if(parameter.ToString() == "Team")
+            {
+                viewModel.CurrentViewModel = new TeamViewModel();
+            }
+            else if(parameter.ToString() == "Task")
+            {
+                viewModel.CurrentViewModel = new TaskViewModel();
+            }
+            else if(parameter.ToString() == "Assignment")
+            {
+                viewModel.CurrentViewModel = new AssignmentViewModel();
+            }
+            else if(parameter.ToString() == "Proficiency")
+            {
+                viewModel.CurrentViewModel = new ProficiencyViewModel();
+            }
+            else if(parameter.ToString() == "TeamProficiency")
+            {
+                viewModel.CurrentViewModel = new TeamProficiencyViewModel();
+            }
+            else if(parameter.ToString() == "Asset")
+            {
+                viewModel.CurrentViewModel = new AssetViewModel();
+            }
         }
     }
 }

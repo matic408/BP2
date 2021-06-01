@@ -24,6 +24,30 @@
         <DataTemplate DataType="{x:Type viewmodels:ContractViewModel}">
             <views:ContractView />
         </DataTemplate>
+        <DataTemplate DataType="{x:Type viewmodels:ProjectViewModel}">
+            <views:ProjectViewModel />
+        </DataTemplate>
+        <DataTemplate DataType="{x:Type viewmodels:EmployeeViewModel}">
+            <views:EmployeeView />
+        </DataTemplate>
+        <DataTemplate DataType="{x:Type viewmodels:TeamViewModel}">
+            <views:TeamView/>
+        </DataTemplate>
+        <DataTemplate DataType="{x:Type viewmodels:TaskViewModel}">
+            <views:TaskView/>
+        </DataTemplate>
+        <DataTemplate DataType="{x:Type viewmodels:AssignmentViewModel}">
+            <views:AssignmentView/>
+        </DataTemplate>
+        <DataTemplate DataType="{x:Type viewmodels:ProficiencyViewModel}">
+            <views:ProficiencyView/>
+        </DataTemplate>
+        <DataTemplate DataType="{x:Type viewmodels:TeamProficiencyViewModel}">
+            <views:TeamProficiencyView/>
+        </DataTemplate>
+        <DataTemplate DataType="{x:Type viewmodels:AssetViewModel}">
+            <views:AssetView/>
+        </DataTemplate>
     </Window.Resources>
     <Grid>
         <Grid.RowDefinitions>

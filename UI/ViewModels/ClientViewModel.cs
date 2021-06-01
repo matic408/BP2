@@ -211,14 +211,14 @@ namespace UI.ViewModels
         {
             if (MessageBox.Show("Are you sure?","Confirmation", MessageBoxButton.YesNo) == MessageBoxResult.Yes)
             {
-                try
-                {
-                    Service.Instance.DeleteClient(SelectedClient.Id);
+
+                if(Service.Instance.DeleteClient(SelectedClient.Id))
+                { 
                     Refresh();
                     Cleanup();
                     Visible = Visibility.Collapsed;
                 }
-                catch
+                else
                 {
                     MessageBox.Show("Failed to Delete, selected entity is in use as a non nullable foreign key.", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
                 }

@@ -4,12 +4,11 @@ using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
 using System.Text;
-using System.Threading.Tasks;
 using System.Windows;
 
 namespace UI.ViewModels
 {
-    public class CompanyViewModel:ViewModelBase
+    public class TeamProficiencyViewModel:ViewModelBase
     {
         private Visibility visible;
         public Visibility Visible
@@ -21,18 +20,55 @@ namespace UI.ViewModels
                 OnPropertyChanged(nameof(Visible));
             }
         }
-        private string name;
-        public string Name
+
+        private ObservableCollection<Proficiency> proficiencies;
+        public ObservableCollection<Proficiency> Proficiencies
         {
-            get { return name; }
+            get { return proficiencies; }
             set
             {
-                name = value;
-                OnPropertyChanged(nameof(Name));
+                proficiencies = value;
+                OnPropertyChanged(nameof(Proficiencies));
             }
         }
-        private ObservableCollection<Company> data;
-        public ObservableCollection<Company> Data
+
+        private ObservableCollection<Team> teams;
+        public ObservableCollection<Team> Teams
+        {
+            get { return teams; }
+            set
+            {
+                teams = value;
+                OnPropertyChanged(nameof(Teams));
+            }
+        }
+
+        private Proficiency selectedProficiency;
+        public Proficiency SelectedProficiency
+        {
+            get { return selectedProficiency; }
+            set
+            {
+                selectedProficiency = value;
+                OnPropertyChanged(nameof(SelectedProficiency));
+            }
+        }
+
+        private Team selectedTeam;
+
+        public Team SelectedTeam
+        {
+            get { return selectedTeam; }
+            set
+            {
+                selectedTeam = value;
+                OnPropertyChanged(nameof(SelectedTeam));
+            }
+        }
+
+
+        private ObservableCollection<TeamProficiency> data;
+        public ObservableCollection<TeamProficiency> Data
         {
             get { return data; }
             set
@@ -42,17 +78,17 @@ namespace UI.ViewModels
             }
         }
 
-        private Company selectedCompany;
-        public Company SelectedCompany
+        private TeamProficiency selectedTeamProficiency;
+        public TeamProficiency SelectedTeamProficiency
         {
-            get { return selectedCompany; }
+            get { return selectedTeamProficiency; }
             set
             {
-                selectedCompany = value;
+                selectedTeamProficiency = value;
                 Visible = Visibility.Collapsed;
                 Cleanup();
                 IsSelected = true;
-                OnPropertyChanged(nameof(SelectedCompany));
+                OnPropertyChanged(nameof(SelectedTeamProficiency));
             }
         }
 
@@ -112,22 +148,26 @@ namespace UI.ViewModels
 
         public void Refresh()
         {
-            Data = new ObservableCollection<Company>(Service.Instance.GetCompanies());
+            Data = new ObservableCollection<TeamProficiency>(Service.Instance.GetTeamProficiencies());
+
         }
 
         public void Cleanup()
         {
-            Name = "";
+            SelectedTeam = null;
+            SelectedProficiency = null;
             IsSelected = false;
         }
 
-        public CompanyViewModel()
+        public TeamProficiencyViewModel()
         {
             ShowAddCommand = new MyICommand(ShowAdd);
             ShowEditCommand = new MyICommand(ShowEdit);
             DeleteCommand = new MyICommand(Delete);
             AddCommand = new MyICommand(Add);
             EditCommand = new MyICommand(Edit);
+            Proficiencies = new ObservableCollection<Proficiency>(Service.Instance.GetProficiencies());
+            Teams = new ObservableCollection<Team>(Service.Instance.GetTeams());
             Cleanup();
             Visible = Visibility.Collapsed;
             Refresh();
@@ -161,7 +201,8 @@ namespace UI.ViewModels
                 Visible = Visibility.Visible;
                 ShowAddButton = Visibility.Collapsed;
                 ShowEditButton = Visibility.Visible;
-                Name = SelectedCompany.Name;
+                SelectedTeam = SelectedTeamProficiency.Team;
+                SelectedProficiency = SelectedTeamProficiency.Proficiency;
             }
             else if (ShowAddButton == Visibility.Visible)
             {
@@ -179,7 +220,7 @@ namespace UI.ViewModels
         {
             if (Validate())
             {
-                Service.Instance.AddCompany(new Company { Name = Name });
+                Service.Instance.AddTeamProficiency(new TeamProficiency { Proficiency = SelectedProficiency, Team = SelectedTeam });
                 Refresh();
                 Cleanup();
                 Visible = Visibility.Collapsed;
@@ -194,7 +235,7 @@ namespace UI.ViewModels
         {
             if (Validate())
             {
-                Service.Instance.EditCompany(SelectedCompany.Id, new Company() { Id = SelectedCompany.Id, Name = Name });
+                Service.Instance.EditTeamProficiency(SelectedTeamProficiency.Id, new TeamProficiency() { Id = SelectedTeamProficiency.Id, Proficiency = SelectedProficiency, Team = SelectedTeam });
                 Refresh();
                 Cleanup();
                 Visible = Visibility.Collapsed;
@@ -209,26 +250,23 @@ namespace UI.ViewModels
         {
             if (MessageBox.Show("Are you sure?", "Confirmation", MessageBoxButton.YesNo) == MessageBoxResult.Yes)
             {
-                if(Service.Instance.DeleteCompany(SelectedCompany.Id))
-                {
-                    Refresh();
-                    Cleanup();
-                    Visible = Visibility.Collapsed;
-                }
-                else
-                {
-                    MessageBox.Show("Failed to Delete, selected entity is in use as a non nullable foreign key.", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
-                }  
+                Service.Instance.DeleteTeamProficiency(SelectedTeamProficiency.Id);
+                Refresh();
+                Cleanup();
+                Visible = Visibility.Collapsed;
             }
         }
 
         public bool Validate()
         {
-            if (String.IsNullOrWhiteSpace(Name))
+            if (SelectedProficiency == null)
             {
                 return false;
             }
-
+            if (SelectedTeam == null)
+            {
+                return false;
+            }
             return true;
         }
     }

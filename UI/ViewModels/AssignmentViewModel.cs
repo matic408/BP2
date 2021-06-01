@@ -4,12 +4,11 @@ using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
 using System.Text;
-using System.Threading.Tasks;
 using System.Windows;
 
 namespace UI.ViewModels
 {
-    public class CompanyViewModel:ViewModelBase
+    public class AssignmentViewModel:ViewModelBase
     {
         private Visibility visible;
         public Visibility Visible
@@ -21,18 +20,55 @@ namespace UI.ViewModels
                 OnPropertyChanged(nameof(Visible));
             }
         }
-        private string name;
-        public string Name
+
+        private ObservableCollection<Task> tasks;
+        public ObservableCollection<Task> Tasks
         {
-            get { return name; }
+            get { return tasks; }
             set
             {
-                name = value;
-                OnPropertyChanged(nameof(Name));
+                tasks = value;
+                OnPropertyChanged(nameof(Tasks));
             }
         }
-        private ObservableCollection<Company> data;
-        public ObservableCollection<Company> Data
+
+        private ObservableCollection<Team> teams;
+        public ObservableCollection<Team> Teams
+        {
+            get { return teams; }
+            set
+            {
+                teams = value;
+                OnPropertyChanged(nameof(Teams));
+            }
+        }
+
+        private Task selectedTask;
+        public Task SelectedTask
+        {
+            get { return selectedTask; }
+            set
+            {
+                selectedTask = value;
+                OnPropertyChanged(nameof(SelectedTask));
+            }
+        }
+
+        private Team selectedTeam;
+
+        public Team SelectedTeam
+        {
+            get { return selectedTeam; }
+            set
+            {
+                selectedTeam = value;
+                OnPropertyChanged(nameof(SelectedTeam));
+            }
+        }
+
+
+        private ObservableCollection<Assignment> data;
+        public ObservableCollection<Assignment> Data
         {
             get { return data; }
             set
@@ -42,17 +78,17 @@ namespace UI.ViewModels
             }
         }
 
-        private Company selectedCompany;
-        public Company SelectedCompany
+        private Assignment selectedAssignment;
+        public Assignment SelectedAssignment
         {
-            get { return selectedCompany; }
+            get { return selectedAssignment; }
             set
             {
-                selectedCompany = value;
+                selectedAssignment = value;
                 Visible = Visibility.Collapsed;
                 Cleanup();
                 IsSelected = true;
-                OnPropertyChanged(nameof(SelectedCompany));
+                OnPropertyChanged(nameof(SelectedAssignment));
             }
         }
 
@@ -112,22 +148,26 @@ namespace UI.ViewModels
 
         public void Refresh()
         {
-            Data = new ObservableCollection<Company>(Service.Instance.GetCompanies());
+            Data = new ObservableCollection<Assignment>(Service.Instance.GetAssignments());
+
         }
 
         public void Cleanup()
         {
-            Name = "";
+            SelectedTeam = null;
+            SelectedTask = null;
             IsSelected = false;
         }
 
-        public CompanyViewModel()
+        public AssignmentViewModel()
         {
             ShowAddCommand = new MyICommand(ShowAdd);
             ShowEditCommand = new MyICommand(ShowEdit);
             DeleteCommand = new MyICommand(Delete);
             AddCommand = new MyICommand(Add);
             EditCommand = new MyICommand(Edit);
+            Tasks = new ObservableCollection<Task>(Service.Instance.GetTasks());
+            Teams = new ObservableCollection<Team>(Service.Instance.GetTeams());
             Cleanup();
             Visible = Visibility.Collapsed;
             Refresh();
@@ -161,7 +201,8 @@ namespace UI.ViewModels
                 Visible = Visibility.Visible;
                 ShowAddButton = Visibility.Collapsed;
                 ShowEditButton = Visibility.Visible;
-                Name = SelectedCompany.Name;
+                SelectedTeam = SelectedAssignment.Team;
+                SelectedTask = SelectedAssignment.Task;
             }
             else if (ShowAddButton == Visibility.Visible)
             {
@@ -179,7 +220,7 @@ namespace UI.ViewModels
         {
             if (Validate())
             {
-                Service.Instance.AddCompany(new Company { Name = Name });
+                Service.Instance.AddAssignment(new Assignment { Task = SelectedTask, Team = SelectedTeam });
                 Refresh();
                 Cleanup();
                 Visible = Visibility.Collapsed;
@@ -194,7 +235,7 @@ namespace UI.ViewModels
         {
             if (Validate())
             {
-                Service.Instance.EditCompany(SelectedCompany.Id, new Company() { Id = SelectedCompany.Id, Name = Name });
+                Service.Instance.EditAssignment(SelectedAssignment.Id, new Assignment() { Id = SelectedAssignment.Id, Task = SelectedTask, Team = SelectedTeam });
                 Refresh();
                 Cleanup();
                 Visible = Visibility.Collapsed;
@@ -209,26 +250,23 @@ namespace UI.ViewModels
         {
             if (MessageBox.Show("Are you sure?", "Confirmation", MessageBoxButton.YesNo) == MessageBoxResult.Yes)
             {
-                if(Service.Instance.DeleteCompany(SelectedCompany.Id))
-                {
-                    Refresh();
-                    Cleanup();
-                    Visible = Visibility.Collapsed;
-                }
-                else
-                {
-                    MessageBox.Show("Failed to Delete, selected entity is in use as a non nullable foreign key.", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
-                }  
+                Service.Instance.DeleteAssignment(SelectedAssignment.Id);
+                Refresh();
+                Cleanup();
+                Visible = Visibility.Collapsed;
             }
         }
 
         public bool Validate()
         {
-            if (String.IsNullOrWhiteSpace(Name))
+            if (SelectedTask == null)
             {
                 return false;
             }
-
+            if (SelectedTeam == null)
+            {
+                return false;
+            }
             return true;
         }
     }

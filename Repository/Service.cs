@@ -51,10 +51,18 @@ namespace Repository
             db.SaveChanges();
         }
 
-        public void DeleteClient(int id)
+        public bool DeleteClient(int id)
         {
-            db.Clients.Remove(db.Clients.FirstOrDefault(x => x.Id == id));
-            db.SaveChanges();
+            if(db.DealsWiths.FirstOrDefault(x=>x.Client.Id == id) == null)
+            {
+                db.Clients.Remove(db.Clients.FirstOrDefault(x => x.Id == id));
+                db.SaveChanges();
+                return true;
+            }
+            else
+            {
+                return false;
+            }
         }
 
         public void AddCompany(Company x)
@@ -79,10 +87,18 @@ namespace Repository
             db.SaveChanges();
         }
 
-        public void DeleteCompany(int id)
+        public bool DeleteCompany(int id)
         {
-            db.Companies.Remove(db.Companies.FirstOrDefault(x => x.Id == id));
-            db.SaveChanges();
+            if(db.DealsWiths.FirstOrDefault(x=>x.Company.Id == id) == null && db.Employees.FirstOrDefault(x=>x.Company.Id == id) == null && db.Assets.FirstOrDefault(x=>x.Company.Id == id) == null)
+            {
+                db.Companies.Remove(db.Companies.FirstOrDefault(x => x.Id == id));
+                db.SaveChanges();
+                return true;
+            }
+            else
+            {
+                return false;
+            }           
         }
 
         public void AddDeal(DealsWith x)
@@ -170,10 +186,18 @@ namespace Repository
             db.SaveChanges();
         }
 
-        public void DeleteProject(int id)
+        public bool DeleteProject(int id)
         {
-            db.Projects.Remove(db.Projects.FirstOrDefault(x => x.Id == id));
-            db.SaveChanges();
+            if(db.Tasks.FirstOrDefault(x=>x.Project.Id == id) == null)
+            {
+                db.Projects.Remove(db.Projects.FirstOrDefault(x => x.Id == id));
+                db.SaveChanges();
+                return true;
+            }
+            else
+            {
+                return false;
+            }
         }
 
         public void AddTask(Task x)
@@ -195,15 +219,23 @@ namespace Repository
         public void EditTask(int id, Task temp)
         {
             db.Tasks.FirstOrDefault(x => x.Id == id).Description = temp.Description;
-            db.Tasks.FirstOrDefault(x => x.Id == id).Project = temp.Project;
             db.Tasks.FirstOrDefault(x => x.Id == id).SuperTask = temp.SuperTask;
             db.SaveChanges();
         }
 
-        public void DeleteTask(int id)
+        public bool DeleteTask(int id)
         {
-            db.Tasks.Remove(db.Tasks.FirstOrDefault(x => x.Id == id));
-            db.SaveChanges();
+            if(db.Assignments.FirstOrDefault(x=>x.Task.Id == id) == null)
+            {
+                db.Tasks.Remove(db.Tasks.FirstOrDefault(x => x.Id == id));
+                db.SaveChanges();
+                return true;
+            }
+            else
+            {
+                return false;
+            }
+            
         }
 
         public void AddAssignment(Assignment x)
@@ -257,10 +289,18 @@ namespace Repository
             db.SaveChanges();
         }
 
-        public void DeleteTeam(int id)
+        public bool DeleteTeam(int id)
         {
-            db.Teams.Remove(db.Teams.FirstOrDefault(x => x.Id == id));
-            db.SaveChanges();
+            if(db.Assignments.FirstOrDefault(x=>x.Team.Id == id) == null && db.TeamProficiencies.FirstOrDefault(x =>x.Team.Id == id) == null)
+            {
+                db.Teams.Remove(db.Teams.FirstOrDefault(x => x.Id == id));
+                db.SaveChanges();
+                return true;
+            }
+            else
+            {
+                return false;
+            }
         }
 
         public void AddTeamProficiency(TeamProficiency x)
@@ -314,38 +354,144 @@ namespace Repository
             db.SaveChanges();
         }
 
-        public void DeleteProficiency(int id)
+        public bool DeleteProficiency(int id)
         {
-            db.Proficiencies.Remove(db.Proficiencies.FirstOrDefault(x => x.Id == id));
+            if(db.TeamProficiencies.FirstOrDefault(x=>x.Proficiency.Id == id) == null)
+            {
+                db.Proficiencies.Remove(db.Proficiencies.FirstOrDefault(x => x.Id == id));
+                db.SaveChanges();
+                return true;
+            }
+            else
+            {
+                return false;
+            }
+        }
+
+        public void AddManager(Manager x)
+        {
+            db.Employees.Add(x);
             db.SaveChanges();
         }
 
-        //public void AddDeveloper(Developer x)
-        //{
-        //    db.Employees.Add(x);
-        //    db.SaveChanges();
-        //}
+        public void AddDeveloper(Developer x)
+        {
+            db.Employees.Add(x);
+            db.SaveChanges();
+        }
 
-        //public List<Team> GetTeams()
-        //{
-        //    return db.Teams.ToList();
-        //}
+        public void AddSupplier(Supplier x)
+        {
+            db.Employees.Add(x);
+            db.SaveChanges();
+        }
 
-        //public Team GetTeam(int id)
-        //{
-        //    return db.Teams.FirstOrDefault(x => x.Id == id);
-        //}
+        public List<Manager> GetManagers()
+        {
+            List<Manager> temp = new List<Manager>();
+            foreach(Employee e in db.Employees)
+            {
+                if(e is Manager)
+                {
+                    temp.Add(e as Manager);
+                }
+            }
+            return temp;
+        }
 
-        //public void EditTeam(int id, Team temp)
-        //{
-        //    db.Teams.FirstOrDefault(x => x.Id == id).Name = temp.Name;
-        //    db.SaveChanges();
-        //}
+        public List<Developer> GetDevelopers()
+        {
+            List<Developer> temp = new List<Developer>();
+            foreach (Employee e in db.Employees)
+            {
+                if (e is Developer)
+                {
+                    temp.Add(e as Developer);
+                }
+            }
+            return temp;
+        }
 
-        //public void DeleteTeam(int id)
-        //{
-        //    db.Teams.Remove(db.Teams.FirstOrDefault(x => x.Id == id));
-        //    db.SaveChanges();
-        //}
+        public List<Supplier> GetSuppliers()
+        {
+            List<Supplier> temp = new List<Supplier>();
+            foreach (Employee e in db.Employees)
+            {
+                if (e is Supplier)
+                {
+                    temp.Add(e as Supplier);
+                }
+            }
+            return temp;
+        }
+
+        public List<Employee> GetEmployees()
+        {
+            return db.Employees.ToList();
+        }
+
+        public Employee GetEmployee(int id)
+        {
+            return db.Employees.FirstOrDefault(x => x.Id == id);
+        }
+
+        public void EditManager(int id, Manager temp)
+        {
+            //db.Employees.FirstOrDefault(x => x.Id == id).Company = temp.Company;
+            db.Employees.FirstOrDefault(x => x.Id == id).DOB = temp.DOB;
+            db.Employees.FirstOrDefault(x => x.Id == id).Gender = temp.Gender;
+            db.Employees.FirstOrDefault(x => x.Id == id).Name = temp.Name;
+            db.SaveChanges();
+        }
+
+        public void EditSupplier(int id, Supplier temp)
+        {
+            //db.Employees.FirstOrDefault(x => x.Id == id).Company = temp.Company;
+            db.Employees.FirstOrDefault(x => x.Id == id).DOB = temp.DOB;
+            db.Employees.FirstOrDefault(x => x.Id == id).Gender = temp.Gender;
+            db.Employees.FirstOrDefault(x => x.Id == id).Name = temp.Name;
+            db.SaveChanges();
+        }
+
+        public void EditDeveloper(int id, Developer temp)
+        {
+            //db.Employees.FirstOrDefault(x => x.Id == id).Company = temp.Company;
+            db.Employees.FirstOrDefault(x => x.Id == id).DOB = temp.DOB;
+            db.Employees.FirstOrDefault(x => x.Id == id).Gender = temp.Gender;
+            db.Employees.FirstOrDefault(x => x.Id == id).Name = temp.Name;
+            (db.Employees.FirstOrDefault(x => x.Id == id)as Developer).Team = temp.Team;
+            db.SaveChanges();
+        }
+
+        public void DeleteEmployee(int id)
+        {
+            db.Employees.Remove(db.Employees.FirstOrDefault(x => x.Id == id));
+            db.SaveChanges();
+        }
+
+        public void AddAsset(Asset x)
+        {
+            db.Assets.Add(x);
+            db.SaveChanges();
+        }
+        public List<Asset> GetAssets()
+        {
+            return db.Assets.ToList();
+        }
+        public Asset GetAsset(int id)
+        {
+            return db.Assets.FirstOrDefault(x => x.Id == id);
+        }
+        public void EditAsset(int id, Asset temp)
+        {
+            db.Assets.FirstOrDefault(x => x.Id == id).Name = temp.Name;
+            db.Assets.FirstOrDefault(x => x.Id == id).Supplier = temp.Supplier;
+            db.SaveChanges();
+        }
+        public void DeleteAsset(int id)
+        {
+            db.Assets.Remove(db.Assets.FirstOrDefault(x => x.Id == id));
+            db.SaveChanges();
+        }
     }
 }

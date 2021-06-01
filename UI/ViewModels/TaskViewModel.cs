@@ -4,12 +4,11 @@ using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
 using System.Text;
-using System.Threading.Tasks;
 using System.Windows;
 
 namespace UI.ViewModels
 {
-    public class CompanyViewModel:ViewModelBase
+    public class TaskViewModel:ViewModelBase
     {
         private Visibility visible;
         public Visibility Visible
@@ -21,18 +20,43 @@ namespace UI.ViewModels
                 OnPropertyChanged(nameof(Visible));
             }
         }
-        private string name;
-        public string Name
+
+        private string desc;
+        public string Desc
         {
-            get { return name; }
+            get { return desc; }
             set
             {
-                name = value;
-                OnPropertyChanged(nameof(Name));
+                desc = value;
+                OnPropertyChanged(nameof(Desc));
             }
         }
-        private ObservableCollection<Company> data;
-        public ObservableCollection<Company> Data
+
+        private ObservableCollection<Project> projects;
+        public ObservableCollection<Project> Projects
+        {
+            get { return projects; }
+            set
+            {
+                projects = value;
+                OnPropertyChanged(nameof(Projects));
+            }
+        }
+
+        private Project selectedProject;
+
+        public Project SelectedProject
+        {
+            get { return selectedProject; }
+            set
+            {
+                selectedProject = value;
+                OnPropertyChanged(nameof(SelectedProject));
+            }
+        }
+
+        private ObservableCollection<Task> data;
+        public ObservableCollection<Task> Data
         {
             get { return data; }
             set
@@ -42,17 +66,42 @@ namespace UI.ViewModels
             }
         }
 
-        private Company selectedCompany;
-        public Company SelectedCompany
+        private ObservableCollection<Task> superTasks;
+
+        public ObservableCollection<Task> SuperTasks
         {
-            get { return selectedCompany; }
+            get { return superTasks; }
             set
             {
-                selectedCompany = value;
+                superTasks = value;
+                OnPropertyChanged(nameof(SuperTasks));
+            }
+        }
+
+        private Task selectedSuperTask;
+        public Task SelectedSuperTask
+        {
+            get { return selectedSuperTask; }
+            set
+            {
+                selectedSuperTask = value;
+                OnPropertyChanged(nameof(SelectedSuperTask));
+            }
+        }
+
+        private Task selectedTask;
+
+        public Task SelectedTask
+        {
+            get { return selectedTask; }
+            set
+            {
+                selectedTask = value;
                 Visible = Visibility.Collapsed;
                 Cleanup();
+                SuperTasks.Remove(SuperTasks.FirstOrDefault(x => x.Id == value.Id));
                 IsSelected = true;
-                OnPropertyChanged(nameof(SelectedCompany));
+                OnPropertyChanged(nameof(SelectedTask));
             }
         }
 
@@ -112,22 +161,27 @@ namespace UI.ViewModels
 
         public void Refresh()
         {
-            Data = new ObservableCollection<Company>(Service.Instance.GetCompanies());
+            Data = new ObservableCollection<Task>(Service.Instance.GetTasks());
         }
 
         public void Cleanup()
         {
-            Name = "";
+            Desc = "";
+            SelectedSuperTask = null;
+            SelectedProject = null;
             IsSelected = false;
+            SuperTasks = new ObservableCollection<Task>(Service.Instance.GetTasks());
         }
 
-        public CompanyViewModel()
+        public TaskViewModel()
         {
             ShowAddCommand = new MyICommand(ShowAdd);
             ShowEditCommand = new MyICommand(ShowEdit);
             DeleteCommand = new MyICommand(Delete);
             AddCommand = new MyICommand(Add);
             EditCommand = new MyICommand(Edit);
+            SuperTasks = new ObservableCollection<Task>(Service.Instance.GetTasks());
+            Projects = new ObservableCollection<Project>(Service.Instance.GetProjects());
             Cleanup();
             Visible = Visibility.Collapsed;
             Refresh();
@@ -161,7 +215,9 @@ namespace UI.ViewModels
                 Visible = Visibility.Visible;
                 ShowAddButton = Visibility.Collapsed;
                 ShowEditButton = Visibility.Visible;
-                Name = SelectedCompany.Name;
+                Desc = SelectedTask.Description;
+                SelectedSuperTask = SelectedTask.SuperTask;
+                SelectedProject = SelectedTask.Project;
             }
             else if (ShowAddButton == Visibility.Visible)
             {
@@ -179,7 +235,7 @@ namespace UI.ViewModels
         {
             if (Validate())
             {
-                Service.Instance.AddCompany(new Company { Name = Name });
+                Service.Instance.AddTask(new Task { Description = Desc, SuperTask = SelectedSuperTask, Project = SelectedProject });
                 Refresh();
                 Cleanup();
                 Visible = Visibility.Collapsed;
@@ -194,7 +250,7 @@ namespace UI.ViewModels
         {
             if (Validate())
             {
-                Service.Instance.EditCompany(SelectedCompany.Id, new Company() { Id = SelectedCompany.Id, Name = Name });
+                Service.Instance.EditTask(SelectedTask.Id, new Task() { Id = SelectedTask.Id, SuperTask = SelectedSuperTask, Description = Desc });
                 Refresh();
                 Cleanup();
                 Visible = Visibility.Collapsed;
@@ -209,8 +265,8 @@ namespace UI.ViewModels
         {
             if (MessageBox.Show("Are you sure?", "Confirmation", MessageBoxButton.YesNo) == MessageBoxResult.Yes)
             {
-                if(Service.Instance.DeleteCompany(SelectedCompany.Id))
-                {
+                if (Service.Instance.DeleteTask(SelectedTask.Id))
+                { 
                     Refresh();
                     Cleanup();
                     Visible = Visibility.Collapsed;
@@ -218,17 +274,20 @@ namespace UI.ViewModels
                 else
                 {
                     MessageBox.Show("Failed to Delete, selected entity is in use as a non nullable foreign key.", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
-                }  
+                }
             }
         }
 
         public bool Validate()
         {
-            if (String.IsNullOrWhiteSpace(Name))
+            if (SelectedProject == null && ShowEditButton == Visibility.Collapsed)
             {
                 return false;
             }
-
+            if (string.IsNullOrWhiteSpace(Desc))
+            {
+                return false;
+            }
             return true;
         }
     }

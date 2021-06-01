@@ -1,4 +1,4 @@
-﻿<UserControl x:Class="UI.Views.ContractView"
+﻿<UserControl x:Class="UI.Views.TaskView"
              xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
@@ -23,12 +23,12 @@
         <Button Grid.Row="1" Grid.Column="0" Command="{Binding ShowAddCommand}">Add</Button>
         <Button Grid.Row="1" Grid.Column="1" Command="{Binding ShowEditCommand}" IsEnabled="{Binding IsSelected}">Edit</Button>
         <Button Grid.Row="1" Grid.Column="2" Command="{Binding DeleteCommand}" IsEnabled="{Binding IsSelected}">Delete</Button>
-        <DataGrid Grid.Column="0" Grid.ColumnSpan="3" Grid.Row="3" AlternatingRowBackground="LightCyan" CanUserAddRows="False" CanUserDeleteRows="False" ItemsSource="{Binding Data}" SelectedItem="{Binding SelectedContract}" AutoGenerateColumns="False" VerticalScrollBarVisibility="Auto">
+        <DataGrid Grid.Column="0" Grid.ColumnSpan="3" Grid.Row="3" AlternatingRowBackground="LightCyan" CanUserAddRows="False" CanUserDeleteRows="False" ItemsSource="{Binding Data}" SelectedItem="{Binding SelectedTask}" AutoGenerateColumns="False" VerticalScrollBarVisibility="Auto">
             <DataGrid.Columns>
                 <DataGridTextColumn Header="ID" Width="*" Binding="{Binding Id}"/>
-                <DataGridTextColumn Header="Signed Date" Width="*" Binding="{Binding DateSigned}"/>
-                <DataGridTextColumn Header="Content" Width="*" Binding="{Binding Content}"/>
-                <DataGridTextColumn Header="Deal" Width="*" Binding="{Binding DealsWith.Id}"/>
+                <DataGridTextColumn Header="Description" Width="*" Binding="{Binding Description}"/>
+                <DataGridTextColumn Header="Project" Width="*" Binding="{Binding Project.Name}"/>
+                <DataGridTextColumn Header="SuperTask" Width="*" Binding="{Binding SuperTask.Description}"/>
             </DataGrid.Columns>
         </DataGrid>
         <Grid Grid.Column="0" Grid.Row="5" Grid.ColumnSpan="3" Visibility="{Binding Visible}">
@@ -43,12 +43,12 @@
                 <RowDefinition Height="*"/>
                 <RowDefinition Height="*"/>
             </Grid.RowDefinitions>
-            <Label Grid.Row="0" Grid.Column="0">Signed Date:</Label>
-            <DatePicker Grid.Row="0" Grid.Column="1" SelectedDate="{Binding Date}"></DatePicker>
-            <Label Grid.Row="1" Grid.Column="0">Content:</Label>
-            <TextBox Grid.Row="1" Grid.Column="1" Text="{Binding Content}"/>
-            <Label Grid.Row="2" Grid.Column="0">Deal ID:</Label>
-            <ComboBox Grid.Row="2" Grid.Column="1" ItemsSource="{Binding Deals}" DisplayMemberPath="Id" SelectedItem="{Binding SelectedDeal}"/>
+            <Label Grid.Row="0" Grid.Column="0">Description:</Label>
+            <TextBox Grid.Row="0" Grid.Column="1" Text="{Binding Desc}"/>
+            <Label Grid.Row="1" Grid.Column="0" Visibility="{Binding ShowAddButton}">Project:</Label>
+            <ComboBox Grid.Row="1" Grid.Column="1" ItemsSource="{Binding Projects}" DisplayMemberPath="Name" SelectedItem="{Binding SelectedProject}" Visibility="{Binding ShowAddButton}"/>
+            <Label Grid.Row="2" Grid.Column="0">SuperTask:</Label>
+            <ComboBox Grid.Row="2" Grid.Column="1" ItemsSource="{Binding SuperTasks}" DisplayMemberPath="Description" SelectedItem="{Binding SelectedSuperTask}"/>
             <Button Grid.Row="3" Grid.Column="1" Command="{Binding AddCommand}" Visibility="{Binding ShowAddButton}">Confirm</Button>
             <Button Grid.Row="3" Grid.Column="1" Command="{Binding EditCommand}" Visibility="{Binding ShowEditButton}">Confirm</Button>
         </Grid>

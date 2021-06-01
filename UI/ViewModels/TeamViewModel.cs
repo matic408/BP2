@@ -9,7 +9,7 @@ using System.Windows;
 
 namespace UI.ViewModels
 {
-    public class CompanyViewModel:ViewModelBase
+    public class TeamViewModel:ViewModelBase
     {
         private Visibility visible;
         public Visibility Visible
@@ -31,8 +31,8 @@ namespace UI.ViewModels
                 OnPropertyChanged(nameof(Name));
             }
         }
-        private ObservableCollection<Company> data;
-        public ObservableCollection<Company> Data
+        private ObservableCollection<Team> data;
+        public ObservableCollection<Team> Data
         {
             get { return data; }
             set
@@ -42,17 +42,17 @@ namespace UI.ViewModels
             }
         }
 
-        private Company selectedCompany;
-        public Company SelectedCompany
+        private Team selectedTeam;
+        public Team SelectedTeam
         {
-            get { return selectedCompany; }
+            get { return selectedTeam; }
             set
             {
-                selectedCompany = value;
+                selectedTeam = value;
                 Visible = Visibility.Collapsed;
                 Cleanup();
                 IsSelected = true;
-                OnPropertyChanged(nameof(SelectedCompany));
+                OnPropertyChanged(nameof(SelectedTeam));
             }
         }
 
@@ -112,7 +112,7 @@ namespace UI.ViewModels
 
         public void Refresh()
         {
-            Data = new ObservableCollection<Company>(Service.Instance.GetCompanies());
+            Data = new ObservableCollection<Team>(Service.Instance.GetTeams());
         }
 
         public void Cleanup()
@@ -121,7 +121,7 @@ namespace UI.ViewModels
             IsSelected = false;
         }
 
-        public CompanyViewModel()
+        public TeamViewModel()
         {
             ShowAddCommand = new MyICommand(ShowAdd);
             ShowEditCommand = new MyICommand(ShowEdit);
@@ -161,7 +161,7 @@ namespace UI.ViewModels
                 Visible = Visibility.Visible;
                 ShowAddButton = Visibility.Collapsed;
                 ShowEditButton = Visibility.Visible;
-                Name = SelectedCompany.Name;
+                Name = SelectedTeam.Name;
             }
             else if (ShowAddButton == Visibility.Visible)
             {
@@ -179,7 +179,7 @@ namespace UI.ViewModels
         {
             if (Validate())
             {
-                Service.Instance.AddCompany(new Company { Name = Name });
+                Service.Instance.AddTeam(new Team { Name = Name });
                 Refresh();
                 Cleanup();
                 Visible = Visibility.Collapsed;
@@ -194,7 +194,7 @@ namespace UI.ViewModels
         {
             if (Validate())
             {
-                Service.Instance.EditCompany(SelectedCompany.Id, new Company() { Id = SelectedCompany.Id, Name = Name });
+                Service.Instance.EditTeam(SelectedTeam.Id, new Team() { Id = SelectedTeam.Id, Name = Name });
                 Refresh();
                 Cleanup();
                 Visible = Visibility.Collapsed;
@@ -209,7 +209,7 @@ namespace UI.ViewModels
         {
             if (MessageBox.Show("Are you sure?", "Confirmation", MessageBoxButton.YesNo) == MessageBoxResult.Yes)
             {
-                if(Service.Instance.DeleteCompany(SelectedCompany.Id))
+                if (Service.Instance.DeleteTeam(SelectedTeam.Id))
                 {
                     Refresh();
                     Cleanup();
@@ -218,7 +218,7 @@ namespace UI.ViewModels
                 else
                 {
                     MessageBox.Show("Failed to Delete, selected entity is in use as a non nullable foreign key.", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
-                }  
+                }
             }
         }
 

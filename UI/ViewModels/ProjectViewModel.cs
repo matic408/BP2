@@ -9,7 +9,7 @@ using System.Windows;
 
 namespace UI.ViewModels
 {
-    public class CompanyViewModel:ViewModelBase
+    public class ProjectViewModel:ViewModelBase
     {
         private Visibility visible;
         public Visibility Visible
@@ -21,7 +21,20 @@ namespace UI.ViewModels
                 OnPropertyChanged(nameof(Visible));
             }
         }
+
+        private string desc;
+        public string Desc
+        {
+            get { return desc; }
+            set
+            {
+                desc = value;
+                OnPropertyChanged(nameof(Desc));
+            }
+        }
+
         private string name;
+
         public string Name
         {
             get { return name; }
@@ -31,8 +44,33 @@ namespace UI.ViewModels
                 OnPropertyChanged(nameof(Name));
             }
         }
-        private ObservableCollection<Company> data;
-        public ObservableCollection<Company> Data
+
+
+        private ObservableCollection<Contract> contracts;
+        public ObservableCollection<Contract> Contracts
+        {
+            get { return contracts; }
+            set
+            {
+                contracts = value;
+                OnPropertyChanged(nameof(Contracts));
+            }
+        }
+
+        private Contract selectedContract;
+
+        public Contract SelectedContract
+        {
+            get { return selectedContract; }
+            set
+            {
+                selectedContract = value;
+                OnPropertyChanged(nameof(SelectedContract));
+            }
+        }
+
+        private ObservableCollection<Project> data;
+        public ObservableCollection<Project> Data
         {
             get { return data; }
             set
@@ -42,17 +80,42 @@ namespace UI.ViewModels
             }
         }
 
-        private Company selectedCompany;
-        public Company SelectedCompany
+        private ObservableCollection<Manager> managers;
+
+        public ObservableCollection<Manager> Managers
         {
-            get { return selectedCompany; }
+            get { return managers; }
             set
             {
-                selectedCompany = value;
+                managers = value;
+                OnPropertyChanged(nameof(Managers));
+            }
+        }
+
+
+        private Manager selectedManager;
+        public Manager SelectedManager
+        {
+            get { return selectedManager; }
+            set
+            {
+                selectedManager = value;
+                OnPropertyChanged(nameof(SelectedManager));
+            }
+        }
+
+        private Project selectedProject;
+
+        public Project SelectedProject
+        {
+            get { return selectedProject; }
+            set
+            {
+                selectedProject = value;
                 Visible = Visibility.Collapsed;
                 Cleanup();
                 IsSelected = true;
-                OnPropertyChanged(nameof(SelectedCompany));
+                OnPropertyChanged(nameof(SelectedProject));
             }
         }
 
@@ -112,22 +175,27 @@ namespace UI.ViewModels
 
         public void Refresh()
         {
-            Data = new ObservableCollection<Company>(Service.Instance.GetCompanies());
+            Data = new ObservableCollection<Project>(Service.Instance.GetProjects());
         }
 
         public void Cleanup()
         {
             Name = "";
+            Desc = "";
+            SelectedManager = null;
+            SelectedContract = null;
             IsSelected = false;
         }
 
-        public CompanyViewModel()
+        public ProjectViewModel()
         {
             ShowAddCommand = new MyICommand(ShowAdd);
             ShowEditCommand = new MyICommand(ShowEdit);
             DeleteCommand = new MyICommand(Delete);
             AddCommand = new MyICommand(Add);
             EditCommand = new MyICommand(Edit);
+            Managers = new ObservableCollection<Manager>(Service.Instance.GetManagers());
+            Contracts = new ObservableCollection<Contract>(Service.Instance.GetContracts());
             Cleanup();
             Visible = Visibility.Collapsed;
             Refresh();
@@ -161,7 +229,10 @@ namespace UI.ViewModels
                 Visible = Visibility.Visible;
                 ShowAddButton = Visibility.Collapsed;
                 ShowEditButton = Visibility.Visible;
-                Name = SelectedCompany.Name;
+                Name = SelectedProject.Name;
+                Desc = SelectedProject.Description;
+                SelectedManager = SelectedProject.Manager;
+                SelectedContract = selectedProject.Contract;
             }
             else if (ShowAddButton == Visibility.Visible)
             {
@@ -179,7 +250,7 @@ namespace UI.ViewModels
         {
             if (Validate())
             {
-                Service.Instance.AddCompany(new Company { Name = Name });
+                Service.Instance.AddProject(new Project { Name=Name, Description = Desc, Manager = SelectedManager, Contract = SelectedContract });
                 Refresh();
                 Cleanup();
                 Visible = Visibility.Collapsed;
@@ -194,7 +265,7 @@ namespace UI.ViewModels
         {
             if (Validate())
             {
-                Service.Instance.EditCompany(SelectedCompany.Id, new Company() { Id = SelectedCompany.Id, Name = Name });
+                Service.Instance.EditProject(SelectedProject.Id, new Project() { Id = SelectedProject.Id, Name = Name, Manager=SelectedManager, Contract= SelectedContract, Description = Desc });
                 Refresh();
                 Cleanup();
                 Visible = Visibility.Collapsed;
@@ -209,7 +280,7 @@ namespace UI.ViewModels
         {
             if (MessageBox.Show("Are you sure?", "Confirmation", MessageBoxButton.YesNo) == MessageBoxResult.Yes)
             {
-                if(Service.Instance.DeleteCompany(SelectedCompany.Id))
+                if (Service.Instance.DeleteProject(SelectedProject.Id))
                 {
                     Refresh();
                     Cleanup();
@@ -218,17 +289,20 @@ namespace UI.ViewModels
                 else
                 {
                     MessageBox.Show("Failed to Delete, selected entity is in use as a non nullable foreign key.", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
-                }  
+                }
             }
         }
 
         public bool Validate()
         {
-            if (String.IsNullOrWhiteSpace(Name))
+            if (SelectedManager == null)
             {
                 return false;
             }
-
+            if (string.IsNullOrWhiteSpace(Desc))
+            {
+                return false;
+            }
             return true;
         }
     }
