@@ -188,7 +188,7 @@ namespace Repository
 
         public bool DeleteProject(int id)
         {
-            if(db.Tasks.FirstOrDefault(x=>x.Project.Id == id) == null)
+            if (db.Tasks.FirstOrDefault(x => x.Project.Id == id) == null)
             {
                 db.Projects.Remove(db.Projects.FirstOrDefault(x => x.Id == id));
                 db.SaveChanges();
@@ -225,17 +225,19 @@ namespace Repository
 
         public bool DeleteTask(int id)
         {
-            if(db.Assignments.FirstOrDefault(x=>x.Task.Id == id) == null)
-            {
-                db.Tasks.Remove(db.Tasks.FirstOrDefault(x => x.Id == id));
-                db.SaveChanges();
-                return true;
-            }
-            else
-            {
-                return false;
-            }
-            
+            //if(db.Assignments.FirstOrDefault(x=>x.Task.Id == id) == null)
+            //{
+            //    db.Tasks.Remove(db.Tasks.FirstOrDefault(x => x.Id == id));
+            //    db.SaveChanges();
+            //    return true;
+            //}
+            //else
+            //{
+            //    return false;
+            //}
+            db.Tasks.Remove(db.Tasks.FirstOrDefault(x => x.Id == id));
+            db.SaveChanges();
+            return true;
         }
 
         public bool AddAssignment(Assignment x)

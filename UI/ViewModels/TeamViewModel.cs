@@ -2,10 +2,13 @@
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.Data;
+using System.Data.SqlClient;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows;
+using UI.Models;
 
 namespace UI.ViewModels
 {
@@ -31,8 +34,8 @@ namespace UI.ViewModels
                 OnPropertyChanged(nameof(Name));
             }
         }
-        private ObservableCollection<Team> data;
-        public ObservableCollection<Team> Data
+        private ObservableCollection<TeamWithCount> data = new ObservableCollection<TeamWithCount>();
+        public ObservableCollection<TeamWithCount> Data
         {
             get { return data; }
             set
@@ -42,8 +45,8 @@ namespace UI.ViewModels
             }
         }
 
-        private Team selectedTeam;
-        public Team SelectedTeam
+        private TeamWithCount selectedTeam;
+        public TeamWithCount SelectedTeam
         {
             get { return selectedTeam; }
             set
@@ -112,7 +115,12 @@ namespace UI.ViewModels
 
         public void Refresh()
         {
-            Data = new ObservableCollection<Team>(Service.Instance.GetTeams());
+            var teams = new ObservableCollection<Team>(Service.Instance.GetTeams());
+            Data.Clear();
+            foreach(Team t in teams)
+            {
+                Data.Add(new TeamWithCount() { One = t, Two = ExecuteFunction(t.Id).ToString() });
+            }
         }
 
         public void Cleanup()
@@ -161,7 +169,7 @@ namespace UI.ViewModels
                 Visible = Visibility.Visible;
                 ShowAddButton = Visibility.Collapsed;
                 ShowEditButton = Visibility.Visible;
-                Name = SelectedTeam.Name;
+                Name = SelectedTeam.One.Name;
             }
             else if (ShowAddButton == Visibility.Visible)
             {
@@ -194,7 +202,7 @@ namespace UI.ViewModels
         {
             if (Validate())
             {
-                Service.Instance.EditTeam(SelectedTeam.Id, new Team() { Id = SelectedTeam.Id, Name = Name });
+                Service.Instance.EditTeam(SelectedTeam.One.Id, new Team() { Id = SelectedTeam.One.Id, Name = Name });
                 Refresh();
                 Cleanup();
                 Visible = Visibility.Collapsed;
@@ -209,7 +217,7 @@ namespace UI.ViewModels
         {
             if (MessageBox.Show("Are you sure?", "Confirmation", MessageBoxButton.YesNo) == MessageBoxResult.Yes)
             {
-                if (Service.Instance.DeleteTeam(SelectedTeam.Id))
+                if (Service.Instance.DeleteTeam(SelectedTeam.One.Id))
                 {
                     Refresh();
                     Cleanup();
@@ -230,6 +238,24 @@ namespace UI.ViewModels
             }
 
             return true;
+        }
+
+        public int ExecuteFunction(int teamId)
+        {
+            var connection = System.Configuration.ConfigurationManager.ConnectionStrings["ModelContainer"].ConnectionString;
+            if (connection.ToLower().StartsWith("metadata="))
+            {
+                System.Data.Entity.Core.EntityClient.EntityConnectionStringBuilder efBuilder = new System.Data.Entity.Core.EntityClient.EntityConnectionStringBuilder(connection);
+                connection = efBuilder.ProviderConnectionString;
+            }
+            using (var conn = new SqlConnection(connection))
+            using (var command = new SqlCommand("SELECT dbo.CountProjectsForTeam(@TeamId)", conn) { })
+            {
+                command.Parameters.AddWithValue("@TeamId", teamId);
+                conn.Open();
+                int result = (int)command.ExecuteScalar();
+                return result;
+            }
         }
     }
 }

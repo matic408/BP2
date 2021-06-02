@@ -19,20 +19,23 @@
             <RowDefinition Height="*"/>
             <RowDefinition Height="10"/>
             <RowDefinition Height="auto"/>
+            <RowDefinition Height="10"/>
+            <RowDefinition Height="auto"/>
         </Grid.RowDefinitions>
         <Button Grid.Row="1" Grid.Column="0" Command="{Binding ShowAddCommand}">Add</Button>
         <Button Grid.Row="1" Grid.Column="1" Command="{Binding ShowEditCommand}" IsEnabled="{Binding IsSelected}">Edit</Button>
         <Button Grid.Row="1" Grid.Column="2" Command="{Binding DeleteCommand}" IsEnabled="{Binding IsSelected}">Delete</Button>
         <DataGrid Grid.Column="0" Grid.ColumnSpan="3" Grid.Row="3" AlternatingRowBackground="LightCyan" CanUserAddRows="False" CanUserDeleteRows="False" ItemsSource="{Binding Data}" SelectedItem="{Binding SelectedProject}" AutoGenerateColumns="False" VerticalScrollBarVisibility="Auto">
             <DataGrid.Columns>
-                <DataGridTextColumn Header="ID" Width="*" Binding="{Binding Id}"/>
-                <DataGridTextColumn Header="Name" Width="*" Binding="{Binding Name}"/>
-                <DataGridTextColumn Header="Description" Width="*" Binding="{Binding Description}"/>
-                <DataGridTextColumn Header="Manager" Width="*" Binding="{Binding Manager.Name}"/>
-                <DataGridTextColumn Header="Contract" Width="*" Binding="{Binding Contract.Id}"/>
+                <DataGridTextColumn Header="ID" Width="*" Binding="{Binding One.Id}"/>
+                <DataGridTextColumn Header="Name" Width="*" Binding="{Binding One.Name}"/>
+                <DataGridTextColumn Header="Description" Width="*" Binding="{Binding One.Description}"/>
+                <DataGridTextColumn Header="Manager" Width="*" Binding="{Binding One.Manager.Name}"/>
+                <DataGridTextColumn Header="Contract" Width="*" Binding="{Binding One.Contract.Id}"/>
+                <DataGridTextColumn Header="Number of Teams" Width="*" Binding="{Binding Two}"/>
             </DataGrid.Columns>
         </DataGrid>
-        <Grid Grid.Column="0" Grid.Row="5" Grid.ColumnSpan="3" Visibility="{Binding Visible}">
+        <Grid Grid.Column="0" Grid.Row="7" Grid.ColumnSpan="3" Visibility="{Binding Visible}">
             <Grid.ColumnDefinitions>
                 <ColumnDefinition Width="*"/>
                 <ColumnDefinition Width="*"/>

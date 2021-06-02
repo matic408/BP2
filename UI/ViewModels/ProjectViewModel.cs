@@ -2,15 +2,34 @@
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.Data;
+using System.Data.SqlClient;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows;
+using UI.Models;
 
 namespace UI.ViewModels
 {
     public class ProjectViewModel:ViewModelBase
     {
+        private ObservableCollection<ProjectWithCount> data = new ObservableCollection<ProjectWithCount>();
+
+        public ObservableCollection<ProjectWithCount> Data
+        {
+            get { return data; }
+            set { data = value; OnPropertyChanged(nameof(Data)); }
+        }
+
+
+        private string teamCount;
+        public string TeamCount
+        {
+            get { return teamCount; }
+            set { teamCount = value; OnPropertyChanged(nameof(TeamCount)); }
+        }
+
         private Visibility visible;
         public Visibility Visible
         {
@@ -69,17 +88,6 @@ namespace UI.ViewModels
             }
         }
 
-        private ObservableCollection<Project> data;
-        public ObservableCollection<Project> Data
-        {
-            get { return data; }
-            set
-            {
-                data = value;
-                OnPropertyChanged(nameof(Data));
-            }
-        }
-
         private ObservableCollection<Manager> managers;
 
         public ObservableCollection<Manager> Managers
@@ -104,9 +112,9 @@ namespace UI.ViewModels
             }
         }
 
-        private Project selectedProject;
+        private ProjectWithCount selectedProject;
 
-        public Project SelectedProject
+        public ProjectWithCount SelectedProject
         {
             get { return selectedProject; }
             set
@@ -175,7 +183,17 @@ namespace UI.ViewModels
 
         public void Refresh()
         {
-            Data = new ObservableCollection<Project>(Service.Instance.GetProjects());
+            var projects = new ObservableCollection<Project>(Service.Instance.GetProjects());
+            Data.Clear();
+            ExecuteProcedure();
+            int i = 1;
+            string Delimiter = "\r\n";
+            string[] teams = TeamCount.Split(new[] { Delimiter }, StringSplitOptions.None);
+            foreach(Project p in projects)
+            {
+                Data.Add(new ProjectWithCount() { One = p, Two = teams[i] });
+                i++;
+            }
         }
 
         public void Cleanup()
@@ -229,10 +247,10 @@ namespace UI.ViewModels
                 Visible = Visibility.Visible;
                 ShowAddButton = Visibility.Collapsed;
                 ShowEditButton = Visibility.Visible;
-                Name = SelectedProject.Name;
-                Desc = SelectedProject.Description;
-                SelectedManager = SelectedProject.Manager;
-                SelectedContract = selectedProject.Contract;
+                Name = SelectedProject.One.Name;
+                Desc = SelectedProject.One.Description;
+                SelectedManager = SelectedProject.One.Manager;
+                SelectedContract = SelectedProject.One.Contract;
             }
             else if (ShowAddButton == Visibility.Visible)
             {
@@ -265,7 +283,7 @@ namespace UI.ViewModels
         {
             if (Validate())
             {
-                Service.Instance.EditProject(SelectedProject.Id, new Project() { Id = SelectedProject.Id, Name = Name, Manager=SelectedManager, Contract= SelectedContract, Description = Desc });
+                Service.Instance.EditProject(SelectedProject.One.Id, new Project() { Id = SelectedProject.One.Id, Name = Name, Manager=SelectedManager, Contract= SelectedContract, Description = Desc });
                 Refresh();
                 Cleanup();
                 Visible = Visibility.Collapsed;
@@ -280,7 +298,7 @@ namespace UI.ViewModels
         {
             if (MessageBox.Show("Are you sure?", "Confirmation", MessageBoxButton.YesNo) == MessageBoxResult.Yes)
             {
-                if (Service.Instance.DeleteProject(SelectedProject.Id))
+                if (Service.Instance.DeleteProject(SelectedProject.One.Id))
                 {
                     Refresh();
                     Cleanup();
@@ -304,6 +322,32 @@ namespace UI.ViewModels
                 return false;
             }
             return true;
+        }
+
+        public void ExecuteProcedure()
+        {
+            var connection = System.Configuration.ConfigurationManager.ConnectionStrings["ModelContainer"].ConnectionString;
+            if (connection.ToLower().StartsWith("metadata="))
+            {
+                System.Data.Entity.Core.EntityClient.EntityConnectionStringBuilder efBuilder = new System.Data.Entity.Core.EntityClient.EntityConnectionStringBuilder(connection);
+                connection = efBuilder.ProviderConnectionString;
+            }
+            using (var conn = new SqlConnection(connection))
+            using (var command = new SqlCommand("dbo.TeamsOnProject", conn)
+            {
+                CommandType = CommandType.StoredProcedure
+            })
+            {
+                conn.Open();
+                conn.InfoMessage += new SqlInfoMessageEventHandler(InfoMsg);
+                TeamCount = "";
+                command.ExecuteNonQuery();
+            }
+        }
+
+        void InfoMsg(object sender, SqlInfoMessageEventArgs e)
+        {
+            TeamCount = e.Message;
         }
     }
 }
